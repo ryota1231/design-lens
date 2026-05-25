@@ -1,0 +1,61 @@
+{
+  "common": {
+    "appName": "Design Lens",
+    "tagline": "街歩きが、デザイン学習に変わる。",
+    "loading": "読み込み中...",
+    "retry": "もう一度試す",
+    "back": "戻る",
+    "save": "保存する",
+    "delete": "削除する",
+    "ok": "OK",
+    "cancel": "キャンセル"
+  },
+  "home": {
+    "title": "デザインを観察しよう",
+    "subtitle": "街中の看板やPOPを撮影すると、AIが意図を読み解きます。",
+    "capture": "撮影する",
+    "viewArchive": "図鑑を見る",
+    "vision": "AI時代に「意図を持つ目」を育てる"
+  },
+  "camera": {
+    "starting": "カメラを起動中...",
+    "permissionDenied": "カメラの利用が許可されていません。ブラウザの設定からカメラを許可してください。",
+    "shutter": "シャッター",
+    "switchCamera": "カメラを切り替え",
+    "cancel": "キャンセル"
+  },
+  "analyze": {
+    "analyzing": "AIが観察中...",
+    "noteAiInference": "※AIによる観察と推測です。正解ではありません。",
+    "concept": "設計意図",
+    "typography": "文字の特徴",
+    "colors": "配色",
+    "composition": "構図",
+    "target": "想定ターゲット",
+    "extractedText": "デザイン中のテキスト",
+    "category": "カテゴリ",
+    "categories": {
+      "sign": "看板",
+      "logo": "ロゴ",
+      "pop": "POP",
+      "signage": "サイネージ",
+      "other": "その他"
+    },
+    "generatePrompt": "AIで再現するプロンプトを作る",
+    "generatingPrompt": "プロンプトを生成中...",
+    "promptHeading": "再現プロンプト",
+    "copyPrompt": "プロンプトをコピー",
+    "promptCopied": "コピーしました"
+  },
+  "archive": {
+    "title": "観察した図鑑",
+    "empty": "まだ何も観察していません。撮影から始めましょう。",
+    "openItem": "詳細を見る"
+  },
+  "errors": {
+    "analysisFailed": "AI解析に失敗しました。時間をおいて再度お試しください。",
+    "rateLimited": "短時間に多くのリクエストがありました。少し待ってから試してください。",
+    "saveFailed": "保存に失敗しました。",
+    "loadFailed": "読み込みに失敗しました。"
+  }
+}

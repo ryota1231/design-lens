@@ -1,0 +1,61 @@
+{
+  "common": {
+    "appName": "Design Lens",
+    "tagline": "Turn your walk into a design lesson.",
+    "loading": "Loading...",
+    "retry": "Try again",
+    "back": "Back",
+    "save": "Save",
+    "delete": "Delete",
+    "ok": "OK",
+    "cancel": "Cancel"
+  },
+  "home": {
+    "title": "Observe design in the wild",
+    "subtitle": "Photograph street signs and POPs - AI will read the designer's intent.",
+    "capture": "Capture",
+    "viewArchive": "View archive",
+    "vision": "Train your eye for design intent in the age of AI"
+  },
+  "camera": {
+    "starting": "Starting camera...",
+    "permissionDenied": "Camera access is not granted. Allow camera in your browser settings.",
+    "shutter": "Shutter",
+    "switchCamera": "Switch camera",
+    "cancel": "Cancel"
+  },
+  "analyze": {
+    "analyzing": "AI is observing...",
+    "noteAiInference": "* This is AI's observation and inference, not a definitive answer.",
+    "concept": "Design intent",
+    "typography": "Typography",
+    "colors": "Color palette",
+    "composition": "Composition",
+    "target": "Target audience",
+    "extractedText": "Text in design",
+    "category": "Category",
+    "categories": {
+      "sign": "Sign",
+      "logo": "Logo",
+      "pop": "POP",
+      "signage": "Signage",
+      "other": "Other"
+    },
+    "generatePrompt": "Make a prompt to recreate with AI",
+    "generatingPrompt": "Generating prompt...",
+    "promptHeading": "Reproduction prompt",
+    "copyPrompt": "Copy prompt",
+    "promptCopied": "Copied"
+  },
+  "archive": {
+    "title": "Your design archive",
+    "empty": "Nothing observed yet. Start with a capture.",
+    "openItem": "Open"
+  },
+  "errors": {
+    "analysisFailed": "Analysis failed. Please try again later.",
+    "rateLimited": "Too many requests in a short time. Please wait a bit.",
+    "saveFailed": "Failed to save.",
+    "loadFailed": "Failed to load."
+  }
+}
