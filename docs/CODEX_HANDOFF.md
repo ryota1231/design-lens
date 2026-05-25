@@ -19,7 +19,9 @@ Codex を起動する前に、以下が揃っていることを確認してく�
 
 ## 1. Codex に渡せる資料（既に整備済み）
 
-プロジェクトディレクトリ `/Users/ryota.isomoto/Documents/New project 5/design-lens/` には、Codex が自律的に作業できるよう以下のドキュメントが整っています。
+プロジェクトディレクトリ `/Users/ryota.isomoto/Developer/design-lens/` には、Codex が自律的に作業できるよう以下のドキュメントが整っています。
+
+> **2026-05-25 更新**: macOS の `Documents` フォルダ保護を回避するため、プロジェクトを `Documents/New project 5/design-lens` から `Developer/design-lens` に移動しました。Git 履歴・ブランチはそのまま維持されています。
 
 ### 1.1 自動的に Codex が読み取るファイル
 
