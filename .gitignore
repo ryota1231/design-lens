@@ -40,3 +40,6 @@ test-results/
 
 # Vercel
 .vercel
+
+# Claude Code (personal progress memos)
+.claude/
