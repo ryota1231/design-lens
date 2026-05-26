@@ -42,5 +42,11 @@ test-results/
 # Vercel
 .vercel
 
+# next-pwa
+public/sw.js
+public/sw.js.map
+public/workbox-*.js
+public/workbox-*.js.map
+
 # Claude Code (personal progress memos)
 .claude/
