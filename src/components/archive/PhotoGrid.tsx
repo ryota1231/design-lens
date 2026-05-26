@@ -15,33 +15,35 @@ interface Item {
 export function PhotoGrid() {
   const t = useTranslations('archive');
   const [items, setItems] = useState<Item[]>([]);
-  const [loaded, setLoaded] = useState(false);
 
   useEffect(() => {
+    let cancelled = false;
     const urls: string[] = [];
 
     void (async () => {
-      const analyses = await listRecentAnalyses({ limit: 50 });
-      const enriched = await Promise.all(
-        analyses.map(async (analysis) => {
-          const photo = await db.photos.get(analysis.photoId);
-          const url = photo ? URL.createObjectURL(photo.thumbnailBlob) : null;
-          if (url) urls.push(url);
+      try {
+        const analyses = await listRecentAnalyses({ limit: 50 });
+        const enriched = await Promise.all(
+          analyses.map(async (analysis) => {
+            const photo = await db.photos.get(analysis.photoId);
+            const url = photo ? URL.createObjectURL(photo.thumbnailBlob) : null;
+            if (url) urls.push(url);
 
-          return { analysis, thumbUrl: url };
-        }),
-      );
+            return { analysis, thumbUrl: url };
+          }),
+        );
 
-      setItems(enriched);
-      setLoaded(true);
+        if (!cancelled) setItems(enriched);
+      } catch {
+        if (!cancelled) setItems([]);
+      }
     })();
 
-    return () => urls.forEach((url) => URL.revokeObjectURL(url));
+    return () => {
+      cancelled = true;
+      urls.forEach((url) => URL.revokeObjectURL(url));
+    };
   }, []);
-
-  if (!loaded) {
-    return <p className="mt-12 text-center text-gray-500">...</p>;
-  }
 
   if (items.length === 0) {
     return <p className="mt-12 text-center text-gray-500">{t('empty')}</p>;

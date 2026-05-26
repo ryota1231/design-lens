@@ -1,11 +1,11 @@
-import { fireEvent, render, screen } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
+import type { AnchorHTMLAttributes, ReactNode } from 'react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { LanguageSwitcher } from '@/components/common/LanguageSwitcher';
 
 const mocks = vi.hoisted(() => ({
   locale: 'ja',
   pathname: '/capture',
-  replace: vi.fn(),
 }));
 
 vi.mock('next-intl', () => ({
@@ -13,37 +13,47 @@ vi.mock('next-intl', () => ({
 }));
 
 vi.mock('@/lib/i18n/routing', () => ({
+  Link: ({
+    children,
+    href,
+    locale,
+    prefetch: _prefetch,
+    ...props
+  }: AnchorHTMLAttributes<HTMLAnchorElement> & {
+    children: ReactNode;
+    href: string;
+    locale: string;
+    prefetch?: boolean;
+  }) => {
+    void _prefetch;
+    return (
+      <a href={`/${locale}${href === '/' ? '' : href}`} {...props}>
+        {children}
+      </a>
+    );
+  },
   routing: {
     locales: ['ja', 'en'],
   },
   usePathname: () => mocks.pathname,
-  useRouter: () => ({
-    replace: mocks.replace,
-  }),
 }));
 
 describe('LanguageSwitcher', () => {
   beforeEach(() => {
     mocks.locale = 'ja';
     mocks.pathname = '/capture';
-    mocks.replace.mockClear();
   });
 
-  it('marks current locale as pressed', () => {
+  it('marks current locale', () => {
     render(<LanguageSwitcher />);
 
-    expect(screen.getByRole('button', { name: '日本語' })).toHaveAttribute(
-      'aria-pressed',
-      'true',
-    );
-    expect(screen.getByRole('button', { name: 'EN' })).toHaveAttribute('aria-pressed', 'false');
+    expect(screen.getByRole('link', { name: '日本語' })).toHaveAttribute('aria-current', 'true');
+    expect(screen.getByRole('link', { name: 'EN' })).not.toHaveAttribute('aria-current');
   });
 
-  it('replaces the current pathname with selected locale', () => {
+  it('links to the current pathname with selected locale', () => {
     render(<LanguageSwitcher />);
 
-    fireEvent.click(screen.getByRole('button', { name: 'EN' }));
-
-    expect(mocks.replace).toHaveBeenCalledWith('/capture', { locale: 'en' });
+    expect(screen.getByRole('link', { name: 'EN' })).toHaveAttribute('href', '/en/capture');
   });
 });
