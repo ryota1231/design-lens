@@ -4,7 +4,7 @@ import { notFound } from 'next/navigation';
 import { NextIntlClientProvider } from 'next-intl';
 import { getMessages } from 'next-intl/server';
 import type { ReactNode } from 'react';
-import { LanguageSwitcher } from '@/components/common/LanguageSwitcher';
+import { AppHeader } from '@/components/common/AppHeader';
 import { routing } from '@/lib/i18n/routing';
 import '../globals.css';
 
@@ -40,12 +40,13 @@ export default async function LocaleLayout({
   const messages = await getMessages();
 
   return (
-    <html lang={locale} className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}>
+    <html
+      lang={locale}
+      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+    >
       <body className="flex min-h-full flex-col">
         <NextIntlClientProvider messages={messages}>
-          <header className="flex items-center justify-end border-b border-gray-200 px-4 py-3">
-            <LanguageSwitcher />
-          </header>
+          <AppHeader />
           {children}
         </NextIntlClientProvider>
       </body>

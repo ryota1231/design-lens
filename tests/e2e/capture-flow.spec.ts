@@ -6,14 +6,20 @@ test('shows Japanese home and switches to English', async ({ page }) => {
   await expect(page).toHaveURL(/\/ja$/);
   await expect(page.getByRole('heading', { name: 'デザインを観察しよう' })).toBeVisible();
   await expect(page.getByRole('link', { name: '撮影する' })).toBeVisible();
-  await expect(page.getByRole('link', { name: '日本語' })).toHaveAttribute('aria-current', 'true');
+  await expect(page.getByRole('link', { exact: true, name: '日本語' })).toHaveAttribute(
+    'aria-current',
+    'true',
+  );
 
-  await page.getByRole('link', { name: 'EN' }).click();
+  await page.getByRole('link', { exact: true, name: 'EN' }).click();
 
   await expect(page).toHaveURL(/\/en$/);
   await expect(page.getByRole('heading', { name: 'Observe design in the wild' })).toBeVisible();
   await expect(page.getByRole('link', { name: 'Capture' })).toBeVisible();
-  await expect(page.getByRole('link', { name: 'EN' })).toHaveAttribute('aria-current', 'true');
+  await expect(page.getByRole('link', { exact: true, name: 'EN' })).toHaveAttribute(
+    'aria-current',
+    'true',
+  );
 });
 
 test('opens archive and shows empty state', async ({ page }) => {

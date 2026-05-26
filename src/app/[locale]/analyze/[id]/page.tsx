@@ -1,15 +1,12 @@
 'use client';
 
 import Image from 'next/image';
+import { ArrowLeft, Copy, Loader2, WandSparkles } from 'lucide-react';
 import { use, useEffect, useState } from 'react';
 import { useLocale, useTranslations } from 'next-intl';
 import { AnalysisCard } from '@/components/analysis/AnalysisCard';
 import { Button } from '@/components/ui/button';
-import {
-  getAnalysisWithPhoto,
-  getPromptByAnalysisId,
-  savePrompt,
-} from '@/lib/db/repository';
+import { getAnalysisWithPhoto, getPromptByAnalysisId, savePrompt } from '@/lib/db/repository';
 import type { AnalysisRecord, PhotoRecord } from '@/lib/db/schema';
 import { Link } from '@/lib/i18n/routing';
 
@@ -94,48 +91,82 @@ export default function AnalyzeDetailPage({ params }: { params: Promise<{ id: st
 
   if (!analysis) {
     return (
-      <main className="flex min-h-screen items-center justify-center">
-        <p>{t('common.loading')}</p>
+      <main className="flex min-h-[calc(100vh-65px)] items-center justify-center">
+        <div className="flex items-center gap-3 rounded-lg border border-stone-200 bg-white px-5 py-4 shadow-sm">
+          <Loader2 aria-hidden className="h-5 w-5 animate-spin text-emerald-800" />
+          <p className="text-sm text-stone-700">{t('common.loading')}</p>
+        </div>
       </main>
     );
   }
 
   return (
-    <main className="mx-auto min-h-screen max-w-2xl p-4">
-      <div className="mb-4">
-        <Link href="/" className="text-sm text-gray-600">
-          ← {t('common.back')}
+    <main className="mx-auto min-h-[calc(100vh-65px)] w-full max-w-5xl px-4 py-6 sm:py-8">
+      <div className="mb-6">
+        <Link
+          href="/"
+          className="inline-flex items-center gap-2 text-sm font-medium text-stone-600 hover:text-stone-950"
+        >
+          <ArrowLeft aria-hidden className="h-4 w-4" />
+          {t('common.back')}
         </Link>
       </div>
 
-      {photoUrl && photo && (
-        <Image
-          src={photoUrl}
-          alt="captured"
-          width={1024}
-          height={768}
-          className="mb-6 w-full rounded-lg object-contain"
-          unoptimized
-        />
-      )}
+      <div className="grid gap-6 lg:grid-cols-[0.92fr_1.08fr] lg:items-start">
+        <aside className="lg:sticky lg:top-24">
+          {photoUrl && photo && (
+            <div className="overflow-hidden rounded-lg border border-stone-200 bg-white shadow-sm">
+              <Image
+                src={photoUrl}
+                alt="captured"
+                width={1024}
+                height={768}
+                className="max-h-[70vh] w-full object-contain"
+                unoptimized
+              />
+            </div>
+          )}
+        </aside>
 
-      <AnalysisCard analysis={analysis} />
+        <section className="space-y-6">
+          <AnalysisCard analysis={analysis} />
 
-      <div className="mt-8">
-        {!prompt && (
-          <Button onClick={handleGeneratePrompt} disabled={promptLoading} size="lg">
-            {promptLoading ? t('analyze.generatingPrompt') : t('analyze.generatePrompt')}
-          </Button>
-        )}
-        {prompt && (
-          <div className="rounded-lg border bg-gray-50 p-4">
-            <h3 className="mb-2 font-semibold">{t('analyze.promptHeading')}</h3>
-            <p className="mb-3 whitespace-pre-wrap text-sm">{prompt}</p>
-            <Button size="sm" variant="secondary" onClick={handleCopyPrompt}>
-              {copied ? t('analyze.promptCopied') : t('analyze.copyPrompt')}
-            </Button>
+          <div className="rounded-lg border border-stone-200 bg-white p-5 shadow-sm">
+            <div className="mb-4 flex items-center gap-2">
+              <span className="flex h-8 w-8 items-center justify-center rounded-md bg-emerald-50 text-emerald-900">
+                <WandSparkles aria-hidden className="h-4 w-4" />
+              </span>
+              <h2 className="font-semibold text-stone-950">{t('analyze.promptHeading')}</h2>
+            </div>
+            {!prompt && (
+              <Button
+                onClick={handleGeneratePrompt}
+                disabled={promptLoading}
+                size="lg"
+                className="gap-2 bg-emerald-950 hover:bg-emerald-900"
+              >
+                {promptLoading && <Loader2 aria-hidden className="h-4 w-4 animate-spin" />}
+                {promptLoading ? t('analyze.generatingPrompt') : t('analyze.generatePrompt')}
+              </Button>
+            )}
+            {prompt && (
+              <div>
+                <p className="mb-4 rounded-md bg-stone-50 p-4 text-sm leading-6 whitespace-pre-wrap text-stone-700">
+                  {prompt}
+                </p>
+                <Button
+                  size="sm"
+                  variant="secondary"
+                  className="gap-2 bg-white shadow-sm"
+                  onClick={handleCopyPrompt}
+                >
+                  <Copy aria-hidden className="h-4 w-4" />
+                  {copied ? t('analyze.promptCopied') : t('analyze.copyPrompt')}
+                </Button>
+              </div>
+            )}
           </div>
-        )}
+        </section>
       </div>
     </main>
   );

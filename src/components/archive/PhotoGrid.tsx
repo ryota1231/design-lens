@@ -1,8 +1,10 @@
 'use client';
 
 import Image from 'next/image';
+import { Camera } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { useTranslations } from 'next-intl';
+import { Button } from '@/components/ui/button';
 import { listRecentAnalyses } from '@/lib/db/repository';
 import { db, type AnalysisRecord } from '@/lib/db/schema';
 import { Link } from '@/lib/i18n/routing';
@@ -13,7 +15,7 @@ interface Item {
 }
 
 export function PhotoGrid() {
-  const t = useTranslations('archive');
+  const t = useTranslations();
   const [items, setItems] = useState<Item[]>([]);
 
   useEffect(() => {
@@ -46,14 +48,35 @@ export function PhotoGrid() {
   }, []);
 
   if (items.length === 0) {
-    return <p className="mt-12 text-center text-gray-500">{t('empty')}</p>;
+    return (
+      <div className="grid min-h-72 place-items-center rounded-lg border border-dashed border-stone-300 bg-white/70 px-6 py-12 text-center">
+        <div className="flex max-w-sm flex-col items-center gap-4">
+          <span className="flex h-12 w-12 items-center justify-center rounded-md bg-emerald-50 text-emerald-900">
+            <Camera aria-hidden className="h-6 w-6" />
+          </span>
+          <p className="text-sm leading-6 text-stone-600">{t('archive.empty')}</p>
+          <Button size="sm" className="gap-2 bg-emerald-950 hover:bg-emerald-900" asChild>
+            <Link href="/capture">
+              <Camera aria-hidden className="h-4 w-4" />
+              {t('home.capture')}
+            </Link>
+          </Button>
+        </div>
+      </div>
+    );
   }
 
   return (
-    <ul className="grid grid-cols-2 gap-3 sm:grid-cols-3">
+    <ul className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
       {items.map(({ analysis, thumbUrl }) => (
-        <li key={analysis.id} className="overflow-hidden rounded-md border">
-          <Link href={`/analyze/${analysis.id}`} className="block">
+        <li
+          key={analysis.id}
+          className="overflow-hidden rounded-lg border border-stone-200 bg-white shadow-sm"
+        >
+          <Link
+            href={`/analyze/${analysis.id}`}
+            className="block transition-opacity hover:opacity-90"
+          >
             {thumbUrl && (
               <Image
                 src={thumbUrl}
@@ -64,8 +87,8 @@ export function PhotoGrid() {
                 unoptimized
               />
             )}
-            <div className="p-2">
-              <p className="line-clamp-2 text-xs">{analysis.concept}</p>
+            <div className="p-3">
+              <p className="line-clamp-2 text-sm leading-5 text-stone-700">{analysis.concept}</p>
             </div>
           </Link>
         </li>

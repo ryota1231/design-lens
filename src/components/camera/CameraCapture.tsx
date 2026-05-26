@@ -1,5 +1,6 @@
 'use client';
 
+import { ArrowLeft, Camera, CircleAlert } from 'lucide-react';
 import { useEffect } from 'react';
 import { useTranslations } from 'next-intl';
 import { Button } from '@/components/ui/button';
@@ -31,11 +32,15 @@ export function CameraCapture({ onCapture, onCancel }: Props) {
 
   if (status === 'denied') {
     return (
-      <div className="flex min-h-screen flex-col items-center justify-center gap-4 p-6">
-        <p className="text-center text-red-600">{t('permissionDenied')}</p>
-        <Button variant="secondary" onClick={onCancel}>
-          {t('cancel')}
-        </Button>
+      <div className="flex min-h-[calc(100vh-65px)] flex-col items-center justify-center gap-4 p-6">
+        <div className="flex max-w-md flex-col items-center gap-4 rounded-lg border border-red-200 bg-white p-6 text-center shadow-sm">
+          <CircleAlert aria-hidden className="h-8 w-8 text-red-600" />
+          <p className="text-red-700">{t('permissionDenied')}</p>
+          <Button variant="secondary" className="gap-2 bg-white shadow-sm" onClick={onCancel}>
+            <ArrowLeft aria-hidden className="h-4 w-4" />
+            {t('cancel')}
+          </Button>
+        </div>
       </div>
     );
   }
@@ -44,25 +49,31 @@ export function CameraCapture({ onCapture, onCancel }: Props) {
     <div className="fixed inset-0 flex flex-col bg-black">
       <video ref={videoRef} className="w-full flex-1 object-cover" playsInline muted autoPlay />
       {status === 'starting' && (
-        <div className="absolute inset-0 flex items-center justify-center text-white">
-          {t('starting')}
+        <div className="absolute inset-0 flex items-center justify-center bg-black/30 text-white">
+          <div className="rounded-md bg-black/50 px-4 py-3 text-sm font-medium backdrop-blur">
+            {t('starting')}
+          </div>
         </div>
       )}
       {error && status === 'error' && (
-        <div className="absolute top-4 right-4 left-4 rounded bg-red-600 p-3 text-white">
+        <div className="absolute top-4 right-4 left-4 rounded-md bg-red-600 p-3 text-white shadow-lg">
           {error}
         </div>
       )}
-      <div className="flex items-center justify-around bg-black/60 p-6">
-        <Button variant="ghost" className="text-white hover:bg-white/10" onClick={onCancel}>
+      <div className="pointer-events-none absolute inset-4 rounded-lg border border-white/30" />
+      <div className="flex items-center justify-around bg-black/70 p-6 pb-[calc(1.5rem+env(safe-area-inset-bottom))]">
+        <Button variant="ghost" className="gap-2 text-white hover:bg-white/10" onClick={onCancel}>
+          <ArrowLeft aria-hidden className="h-4 w-4" />
           {t('cancel')}
         </Button>
         <button
           aria-label={t('shutter')}
           onClick={handleShutter}
           disabled={status !== 'ready'}
-          className="h-16 w-16 rounded-full border-4 border-white bg-white disabled:opacity-50"
-        />
+          className="grid h-[4.5rem] w-[4.5rem] place-items-center rounded-full border-4 border-white bg-white text-stone-950 shadow-xl transition-transform active:scale-95 disabled:opacity-50"
+        >
+          <Camera aria-hidden className="h-7 w-7" />
+        </button>
         <div className="w-16" />
       </div>
     </div>
