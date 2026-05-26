@@ -1,6 +1,6 @@
 'use client';
 
-import { LayoutGrid, Palette, TextQuote, Type, Users } from 'lucide-react';
+import { LayoutGrid, Palette, Tag, TextQuote, Type, Users } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import type { ReactNode } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -41,8 +41,13 @@ export function AnalysisCard({ analysis }: Props) {
   return (
     <div className="space-y-4">
       <Card className="border-emerald-950 bg-emerald-950 text-white">
-        <CardHeader className="p-5 pb-3">
+        <CardHeader className="flex-row items-start justify-between gap-3 space-y-0 p-5 pb-3">
           <CardTitle className="text-base text-emerald-50">{t('concept')}</CardTitle>
+          <div className="flex shrink-0 items-center gap-2 rounded-md bg-white/10 px-3 py-2 text-xs text-emerald-50">
+            <Tag aria-hidden className="h-3.5 w-3.5" />
+            <span>{t('category')}</span>
+            <span className="font-semibold">{t(`categories.${analysis.category}`)}</span>
+          </div>
         </CardHeader>
         <CardContent className="p-5 pt-0">
           <p className="text-xl leading-8 font-semibold">{analysis.concept}</p>

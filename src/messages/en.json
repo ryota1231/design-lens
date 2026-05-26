@@ -55,6 +55,7 @@
   "errors": {
     "analysisFailed": "Analysis failed. Please try again later.",
     "rateLimited": "Too many requests in a short time. Please wait a bit.",
+    "promptFailed": "Prompt generation failed. Please try again later.",
     "saveFailed": "Failed to save.",
     "loadFailed": "Failed to load."
   }

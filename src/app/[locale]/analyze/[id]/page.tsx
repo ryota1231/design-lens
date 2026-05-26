@@ -1,7 +1,7 @@
 'use client';
 
 import Image from 'next/image';
-import { ArrowLeft, Copy, Loader2, WandSparkles } from 'lucide-react';
+import { ArrowLeft, CircleAlert, Copy, Loader2, WandSparkles } from 'lucide-react';
 import { use, useEffect, useState } from 'react';
 import { useLocale, useTranslations } from 'next-intl';
 import { AnalysisCard } from '@/components/analysis/AnalysisCard';
@@ -19,25 +19,36 @@ export default function AnalyzeDetailPage({ params }: { params: Promise<{ id: st
   const [photoUrl, setPhotoUrl] = useState<string | null>(null);
   const [prompt, setPrompt] = useState<string | null>(null);
   const [promptLoading, setPromptLoading] = useState(false);
+  const [promptError, setPromptError] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
+  const [loadStatus, setLoadStatus] = useState<'loading' | 'ready' | 'missing'>('loading');
 
   useEffect(() => {
     let urlForCleanup: string | null = null;
 
     void (async () => {
-      const result = await getAnalysisWithPhoto(id);
-      if (!result) return;
+      try {
+        const result = await getAnalysisWithPhoto(id);
+        if (!result) {
+          setLoadStatus('missing');
+          return;
+        }
 
-      setAnalysis(result.analysis);
-      setPhoto(result.photo ?? null);
+        setAnalysis(result.analysis);
+        setPhoto(result.photo ?? null);
 
-      if (result.photo) {
-        urlForCleanup = URL.createObjectURL(result.photo.blob);
-        setPhotoUrl(urlForCleanup);
+        if (result.photo) {
+          urlForCleanup = URL.createObjectURL(result.photo.blob);
+          setPhotoUrl(urlForCleanup);
+        }
+
+        const existing = await getPromptByAnalysisId(id);
+        if (existing) setPrompt(existing.prompt);
+        setLoadStatus('ready');
+      } catch (e) {
+        console.error(e);
+        setLoadStatus('missing');
       }
-
-      const existing = await getPromptByAnalysisId(id);
-      if (existing) setPrompt(existing.prompt);
     })();
 
     return () => {
@@ -48,6 +59,7 @@ export default function AnalyzeDetailPage({ params }: { params: Promise<{ id: st
   async function handleGeneratePrompt() {
     if (!analysis) return;
     setPromptLoading(true);
+    setPromptError(null);
 
     try {
       const res = await fetch('/api/prompt', {
@@ -77,6 +89,7 @@ export default function AnalyzeDetailPage({ params }: { params: Promise<{ id: st
       await savePrompt({ analysisId: id, prompt: json.prompt });
     } catch (e) {
       console.error(e);
+      setPromptError(t('errors.promptFailed'));
     } finally {
       setPromptLoading(false);
     }
@@ -89,7 +102,24 @@ export default function AnalyzeDetailPage({ params }: { params: Promise<{ id: st
     setTimeout(() => setCopied(false), 2000);
   }
 
-  if (!analysis) {
+  if (loadStatus === 'missing') {
+    return (
+      <main className="flex min-h-[calc(100vh-65px)] items-center justify-center px-4">
+        <div className="flex max-w-md flex-col items-center gap-4 rounded-lg border border-stone-200 bg-white p-6 text-center shadow-sm">
+          <CircleAlert aria-hidden className="h-8 w-8 text-amber-700" />
+          <p className="text-sm leading-6 text-stone-700">{t('errors.loadFailed')}</p>
+          <Button variant="secondary" className="gap-2 bg-white shadow-sm" asChild>
+            <Link href="/">
+              <ArrowLeft aria-hidden className="h-4 w-4" />
+              {t('common.back')}
+            </Link>
+          </Button>
+        </div>
+      </main>
+    );
+  }
+
+  if (!analysis || loadStatus === 'loading') {
     return (
       <main className="flex min-h-[calc(100vh-65px)] items-center justify-center">
         <div className="flex items-center gap-3 rounded-lg border border-stone-200 bg-white px-5 py-4 shadow-sm">
@@ -139,15 +169,22 @@ export default function AnalyzeDetailPage({ params }: { params: Promise<{ id: st
               <h2 className="font-semibold text-stone-950">{t('analyze.promptHeading')}</h2>
             </div>
             {!prompt && (
-              <Button
-                onClick={handleGeneratePrompt}
-                disabled={promptLoading}
-                size="lg"
-                className="gap-2 bg-emerald-950 hover:bg-emerald-900"
-              >
-                {promptLoading && <Loader2 aria-hidden className="h-4 w-4 animate-spin" />}
-                {promptLoading ? t('analyze.generatingPrompt') : t('analyze.generatePrompt')}
-              </Button>
+              <div className="space-y-3">
+                <Button
+                  onClick={handleGeneratePrompt}
+                  disabled={promptLoading}
+                  size="lg"
+                  className="gap-2 bg-emerald-950 hover:bg-emerald-900"
+                >
+                  {promptLoading && <Loader2 aria-hidden className="h-4 w-4 animate-spin" />}
+                  {promptLoading ? t('analyze.generatingPrompt') : t('analyze.generatePrompt')}
+                </Button>
+                {promptError && (
+                  <p className="rounded-md border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">
+                    {promptError}
+                  </p>
+                )}
+              </div>
             )}
             {prompt && (
               <div>
