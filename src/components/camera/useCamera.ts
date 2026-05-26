@@ -3,30 +3,45 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 
 export type CameraStatus = 'idle' | 'starting' | 'ready' | 'denied' | 'error';
+export type CameraFacingMode = 'user' | 'environment';
 
 export interface UseCameraResult {
   status: CameraStatus;
+  facingMode: CameraFacingMode;
   videoRef: React.RefObject<HTMLVideoElement | null>;
   start: () => Promise<void>;
   stop: () => void;
+  switchFacingMode: () => Promise<void>;
   capture: () => Promise<Blob | null>;
   error: string | null;
 }
 
-export function useCamera(opts: { facingMode?: 'user' | 'environment' } = {}): UseCameraResult {
-  const facingMode = opts.facingMode ?? 'environment';
+export function useCamera(opts: { facingMode?: CameraFacingMode } = {}): UseCameraResult {
+  const initialFacingMode = opts.facingMode ?? 'environment';
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const streamRef = useRef<MediaStream | null>(null);
+  const facingModeRef = useRef<CameraFacingMode>(initialFacingMode);
+  const [facingMode, setFacingMode] = useState<CameraFacingMode>(initialFacingMode);
   const [status, setStatus] = useState<CameraStatus>('idle');
   const [error, setError] = useState<string | null>(null);
 
-  const start = useCallback(async () => {
+  const stopStream = useCallback(() => {
+    streamRef.current?.getTracks().forEach((track) => track.stop());
+    streamRef.current = null;
+
+    if (videoRef.current) {
+      videoRef.current.srcObject = null;
+    }
+  }, []);
+
+  const startStream = useCallback(async (mode: CameraFacingMode) => {
+    stopStream();
     setStatus('starting');
     setError(null);
 
     try {
       const stream = await navigator.mediaDevices.getUserMedia({
-        video: { facingMode, width: { ideal: 1920 }, height: { ideal: 1080 } },
+        video: { facingMode: mode, width: { ideal: 1920 }, height: { ideal: 1080 } },
         audio: false,
       });
 
@@ -46,18 +61,28 @@ export function useCamera(opts: { facingMode?: 'user' | 'environment' } = {}): U
       }
       setError(msg);
     }
-  }, [facingMode]);
+  }, [stopStream]);
+
+  const start = useCallback(async () => {
+    await startStream(facingModeRef.current);
+  }, [startStream]);
 
   const stop = useCallback(() => {
-    streamRef.current?.getTracks().forEach((track) => track.stop());
-    streamRef.current = null;
-
-    if (videoRef.current) {
-      videoRef.current.srcObject = null;
-    }
-
+    stopStream();
     setStatus('idle');
-  }, []);
+  }, [stopStream]);
+
+  const switchFacingMode = useCallback(async () => {
+    const nextMode = facingModeRef.current === 'environment' ? 'user' : 'environment';
+    const shouldRestart = status === 'ready' || status === 'error';
+
+    facingModeRef.current = nextMode;
+    setFacingMode(nextMode);
+
+    if (shouldRestart) {
+      await startStream(nextMode);
+    }
+  }, [startStream, status]);
 
   const capture = useCallback(async (): Promise<Blob | null> => {
     const video = videoRef.current;
@@ -78,9 +103,9 @@ export function useCamera(opts: { facingMode?: 'user' | 'environment' } = {}): U
 
   useEffect(() => {
     return () => {
-      streamRef.current?.getTracks().forEach((track) => track.stop());
+      stopStream();
     };
-  }, []);
+  }, [stopStream]);
 
-  return { status, videoRef, start, stop, capture, error };
+  return { status, facingMode, videoRef, start, stop, switchFacingMode, capture, error };
 }

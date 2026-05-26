@@ -1,6 +1,6 @@
 'use client';
 
-import { ArrowLeft, Camera, CircleAlert } from 'lucide-react';
+import { ArrowLeft, Camera, CircleAlert, RefreshCw } from 'lucide-react';
 import { useEffect } from 'react';
 import { useTranslations } from 'next-intl';
 import { Button } from '@/components/ui/button';
@@ -13,7 +13,7 @@ interface Props {
 
 export function CameraCapture({ onCapture, onCancel }: Props) {
   const t = useTranslations('camera');
-  const { status, videoRef, start, stop, capture, error } = useCamera({
+  const { status, videoRef, start, stop, switchFacingMode, capture, error } = useCamera({
     facingMode: 'environment',
   });
 
@@ -61,8 +61,12 @@ export function CameraCapture({ onCapture, onCancel }: Props) {
         </div>
       )}
       <div className="pointer-events-none absolute inset-4 rounded-lg border border-white/30" />
-      <div className="flex items-center justify-around bg-black/70 p-6 pb-[calc(1.5rem+env(safe-area-inset-bottom))]">
-        <Button variant="ghost" className="gap-2 text-white hover:bg-white/10" onClick={onCancel}>
+      <div className="grid grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-center gap-4 bg-black/70 p-6 pb-[calc(1.5rem+env(safe-area-inset-bottom))]">
+        <Button
+          variant="ghost"
+          className="justify-self-start gap-2 text-white hover:bg-white/10"
+          onClick={onCancel}
+        >
           <ArrowLeft aria-hidden className="h-4 w-4" />
           {t('cancel')}
         </Button>
@@ -70,11 +74,21 @@ export function CameraCapture({ onCapture, onCancel }: Props) {
           aria-label={t('shutter')}
           onClick={handleShutter}
           disabled={status !== 'ready'}
-          className="grid h-[4.5rem] w-[4.5rem] place-items-center rounded-full border-4 border-white bg-white text-stone-950 shadow-xl transition-transform active:scale-95 disabled:opacity-50"
+          className="grid h-[4.5rem] w-[4.5rem] place-items-center justify-self-center rounded-full border-4 border-white bg-white text-stone-950 shadow-xl transition-transform active:scale-95 disabled:opacity-50"
         >
           <Camera aria-hidden className="h-7 w-7" />
         </button>
-        <div className="w-16" />
+        <Button
+          variant="ghost"
+          size="icon"
+          className="justify-self-end text-white hover:bg-white/10"
+          onClick={() => void switchFacingMode()}
+          disabled={status === 'starting'}
+          aria-label={t('switchCamera')}
+          title={t('switchCamera')}
+        >
+          <RefreshCw aria-hidden className="h-5 w-5" />
+        </Button>
       </div>
     </div>
   );
