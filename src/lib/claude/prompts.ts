@@ -6,7 +6,7 @@ export function buildAnalyzeSystemPrompt(language: 'ja' | 'en'): string {
 1. すべて「観察と推測」のトーンで述べる（断定せず「〜のように見える」「〜の意図と思われる」）
 2. 専門用語を使うときは必ず日常語と併記する（例: 「ヒゲのない太い文字（極太サンセリフ）」）
 3. 「意図を持つ目」を育てるアプリの一部であることを意識し、なぜそのデザインがこうなっているかを言語化する
-4. 必ず JSON のみを返す。説明文や前置きを書かない
+4. 必ず JSON オブジェクトのみを返す。説明文、前置き、Markdown、コードフェンス表記は書かない
 
 【JSON スキーマ】
 {
@@ -27,7 +27,7 @@ export function buildAnalyzeSystemPrompt(language: 'ja' | 'en'): string {
 1. Use the tone of "observation and inference" throughout (avoid assertions; prefer "it appears to...", "the likely intent is...")
 2. When using technical terms, always pair them with everyday language (e.g., "Bold sans-serif (thick fonts without serifs)")
 3. This app exists to train "an eye that holds intent." Articulate WHY the design looks the way it does.
-4. Return JSON ONLY. No prose, no preamble.
+4. Return only a JSON object. No prose, no preamble, no Markdown, no code fences.
 
 [JSON Schema]
 {

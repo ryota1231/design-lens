@@ -65,6 +65,41 @@ describe('analyzeImage', () => {
       }),
     ).rejects.toThrow();
   });
+
+  it('should parse fenced JSON and normalize common Claude field variations', async () => {
+    mockCreate.mockResolvedValue({
+      content: [
+        {
+          type: 'text',
+          text: `解析結果です。
+
+\`\`\`json
+{
+  "concept": "夕方の販促ポスターのように見える",
+  "typography": "太い文字",
+  "fontHints": "Helvetica",
+  "colors": [{ "hex": "#abc", "role": "背景色" }],
+  "composition": "中央に大きく配置",
+  "target": "若年層",
+  "extractedText": "SALE",
+  "category": "poster"
+}
+\`\`\``,
+        },
+      ],
+    });
+
+    const result = await analyzeImage({
+      imageBase64: 'data:image/jpeg;base64,xxx',
+      mediaType: 'image/jpeg',
+      language: 'ja',
+    });
+
+    expect(result.category).toBe('pop');
+    expect(result.colors[0]).toEqual({ hex: '#AABBCC', role: '背景色' });
+    expect(result.fontHints).toEqual(['Helvetica']);
+    expect(result.extractedText).toEqual(['SALE']);
+  });
 });
 
 describe('generateReproductionPrompt', () => {
