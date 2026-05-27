@@ -47,6 +47,9 @@ describe('analyzeImage', () => {
     expect(result.concept).toBe('セール訴求');
     expect(result.colors[0].hex).toBe('#FF0000');
     expect(mockCreate).toHaveBeenCalledOnce();
+    expect(mockCreate).toHaveBeenCalledWith(
+      expect.objectContaining({ model: 'claude-sonnet-4-20250514' }),
+    );
   });
 
   it('should throw when Claude returns malformed JSON', async () => {

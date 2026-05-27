@@ -2,7 +2,7 @@ import Anthropic from '@anthropic-ai/sdk';
 import { AnalysisResultSchema, type AnalysisResult } from '@/types/analysis';
 import { buildAnalyzeSystemPrompt, buildReproductionPromptSystem } from './prompts';
 
-const MODEL = 'claude-sonnet-4-5';
+const MODEL = 'claude-sonnet-4-20250514';
 
 function getClient(): Anthropic {
   const apiKey = process.env.ANTHROPIC_API_KEY;
