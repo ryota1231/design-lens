@@ -4,7 +4,6 @@ import { notFound } from 'next/navigation';
 import { NextIntlClientProvider } from 'next-intl';
 import { getMessages } from 'next-intl/server';
 import type { ReactNode } from 'react';
-import { AppHeader } from '@/components/common/AppHeader';
 import { routing } from '@/lib/i18n/routing';
 import '../globals.css';
 
@@ -46,7 +45,6 @@ export default async function LocaleLayout({
     >
       <body className="flex min-h-full flex-col">
         <NextIntlClientProvider messages={messages}>
-          <AppHeader />
           {children}
         </NextIntlClientProvider>
       </body>

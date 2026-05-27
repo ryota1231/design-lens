@@ -59,7 +59,10 @@ export async function savePrompt(args: {
     createdAt: Date.now(),
   };
 
-  await db.prompts.add(record);
+  await db.transaction('rw', db.prompts, async () => {
+    await db.prompts.where('analysisId').equals(args.analysisId).delete();
+    await db.prompts.add(record);
+  });
   return record;
 }
 

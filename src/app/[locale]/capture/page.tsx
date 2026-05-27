@@ -69,8 +69,8 @@ export default function CapturePage() {
 
   if (phase === 'analyzing') {
     return (
-      <main className="flex min-h-[calc(100vh-65px)] items-center justify-center px-4">
-        <div className="flex flex-col items-center gap-4 rounded-lg border border-stone-200 bg-white px-8 py-10 text-center shadow-sm">
+      <main className="flex min-h-dvh items-center justify-center px-4">
+        <div className="flex flex-col items-center gap-4 rounded-xl border border-stone-200 bg-white px-8 py-10 text-center shadow-sm">
           <Loader2 aria-hidden className="h-8 w-8 animate-spin text-emerald-800" />
           <p className="text-lg font-semibold text-stone-950">{t('analyze.analyzing')}</p>
         </div>
@@ -80,8 +80,8 @@ export default function CapturePage() {
 
   if (phase === 'error') {
     return (
-      <main className="flex min-h-[calc(100vh-65px)] flex-col items-center justify-center gap-4 p-6">
-        <div className="flex max-w-md flex-col items-center gap-4 rounded-lg border border-red-200 bg-white p-6 text-center shadow-sm">
+      <main className="flex min-h-dvh flex-col items-center justify-center gap-4 p-6">
+        <div className="flex max-w-md flex-col items-center gap-4 rounded-xl border border-red-200 bg-white p-6 text-center shadow-sm">
           <AlertTriangle aria-hidden className="h-8 w-8 text-red-600" />
           <p className="text-red-700">{errorMsg}</p>
           <Button

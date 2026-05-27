@@ -1,25 +1,19 @@
 import { expect, test } from '@playwright/test';
 
-test('shows Japanese home and switches to English', async ({ page }) => {
+test('shows Japanese home and renders English route directly', async ({ page }) => {
   await page.goto('/ja');
 
   await expect(page).toHaveURL(/\/ja$/);
   await expect(page.getByRole('heading', { name: 'デザインを観察しよう' })).toBeVisible();
   await expect(page.getByRole('link', { name: '撮影する' })).toBeVisible();
-  await expect(page.getByRole('link', { exact: true, name: '日本語' })).toHaveAttribute(
-    'aria-current',
-    'true',
-  );
+  await expect(page.getByRole('link', { exact: true, name: '日本語' })).toHaveCount(0);
+  await expect(page.getByRole('link', { exact: true, name: 'EN' })).toHaveCount(0);
 
-  await page.getByRole('link', { exact: true, name: 'EN' }).click();
+  await page.goto('/en');
 
   await expect(page).toHaveURL(/\/en$/);
   await expect(page.getByRole('heading', { name: 'Observe design in the wild' })).toBeVisible();
   await expect(page.getByRole('link', { name: 'Capture' })).toBeVisible();
-  await expect(page.getByRole('link', { exact: true, name: 'EN' })).toHaveAttribute(
-    'aria-current',
-    'true',
-  );
 });
 
 test('opens archive and shows empty state', async ({ page }) => {

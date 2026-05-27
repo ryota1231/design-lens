@@ -10,7 +10,7 @@ export default function ArchivePage() {
   const t = useTranslations();
 
   return (
-    <main className="mx-auto min-h-[calc(100vh-65px)] w-full max-w-5xl px-4 py-6 sm:py-8">
+    <main className="mx-auto min-h-dvh w-full max-w-5xl px-4 py-6 pb-[calc(2rem+env(safe-area-inset-bottom))] sm:py-8">
       <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
         <div className="space-y-3">
           <Link

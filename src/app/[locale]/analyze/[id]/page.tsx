@@ -3,7 +3,7 @@
 import Image from 'next/image';
 import { ArrowLeft, CircleAlert, Copy, Loader2, WandSparkles } from 'lucide-react';
 import { use, useEffect, useState } from 'react';
-import { useLocale, useTranslations } from 'next-intl';
+import { useTranslations } from 'next-intl';
 import { AnalysisCard } from '@/components/analysis/AnalysisCard';
 import { Button } from '@/components/ui/button';
 import { getAnalysisWithPhoto, getPromptByAnalysisId, savePrompt } from '@/lib/db/repository';
@@ -13,7 +13,6 @@ import { Link } from '@/lib/i18n/routing';
 export default function AnalyzeDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
   const t = useTranslations();
-  const locale = useLocale() as 'ja' | 'en';
   const [analysis, setAnalysis] = useState<AnalysisRecord | null>(null);
   const [photo, setPhoto] = useState<PhotoRecord | null>(null);
   const [photoUrl, setPhotoUrl] = useState<string | null>(null);
@@ -76,7 +75,7 @@ export default function AnalyzeDetailPage({ params }: { params: Promise<{ id: st
             extractedText: analysis.extractedText,
             category: analysis.category,
           },
-          language: locale,
+          language: 'ja',
         }),
       });
 
@@ -104,8 +103,8 @@ export default function AnalyzeDetailPage({ params }: { params: Promise<{ id: st
 
   if (loadStatus === 'missing') {
     return (
-      <main className="flex min-h-[calc(100vh-65px)] items-center justify-center px-4">
-        <div className="flex max-w-md flex-col items-center gap-4 rounded-lg border border-stone-200 bg-white p-6 text-center shadow-sm">
+      <main className="flex min-h-dvh items-center justify-center bg-[#f2f0eb] px-4">
+        <div className="flex max-w-md flex-col items-center gap-4 rounded-xl border border-stone-200 bg-white p-6 text-center shadow-sm">
           <CircleAlert aria-hidden className="h-8 w-8 text-amber-700" />
           <p className="text-sm leading-6 text-stone-700">{t('errors.loadFailed')}</p>
           <Button variant="secondary" className="gap-2 bg-white shadow-sm" asChild>
@@ -121,8 +120,8 @@ export default function AnalyzeDetailPage({ params }: { params: Promise<{ id: st
 
   if (!analysis || loadStatus === 'loading') {
     return (
-      <main className="flex min-h-[calc(100vh-65px)] items-center justify-center">
-        <div className="flex items-center gap-3 rounded-lg border border-stone-200 bg-white px-5 py-4 shadow-sm">
+      <main className="flex min-h-dvh items-center justify-center bg-[#f2f0eb]">
+        <div className="flex items-center gap-3 rounded-xl border border-stone-200 bg-white px-5 py-4 shadow-sm">
           <Loader2 aria-hidden className="h-5 w-5 animate-spin text-emerald-800" />
           <p className="text-sm text-stone-700">{t('common.loading')}</p>
         </div>
@@ -131,79 +130,101 @@ export default function AnalyzeDetailPage({ params }: { params: Promise<{ id: st
   }
 
   return (
-    <main className="mx-auto min-h-[calc(100vh-65px)] w-full max-w-5xl px-4 py-6 sm:py-8">
-      <div className="mb-6">
-        <Link
-          href="/"
-          className="inline-flex items-center gap-2 text-sm font-medium text-stone-600 hover:text-stone-950"
-        >
-          <ArrowLeft aria-hidden className="h-4 w-4" />
-          {t('common.back')}
-        </Link>
-      </div>
-
-      <div className="grid gap-6 lg:grid-cols-[0.92fr_1.08fr] lg:items-start">
-        <aside className="lg:sticky lg:top-24">
-          {photoUrl && photo && (
-            <div className="overflow-hidden rounded-lg border border-stone-200 bg-white shadow-sm">
-              <Image
-                src={photoUrl}
-                alt="captured"
-                width={1024}
-                height={768}
-                className="max-h-[70vh] w-full object-contain"
-                unoptimized
-              />
-            </div>
-          )}
-        </aside>
-
-        <section className="space-y-6">
-          <AnalysisCard analysis={analysis} />
-
-          <div className="rounded-lg border border-stone-200 bg-white p-5 shadow-sm">
-            <div className="mb-4 flex items-center gap-2">
-              <span className="flex h-8 w-8 items-center justify-center rounded-md bg-emerald-50 text-emerald-900">
-                <WandSparkles aria-hidden className="h-4 w-4" />
-              </span>
-              <h2 className="font-semibold text-stone-950">{t('analyze.promptHeading')}</h2>
-            </div>
-            {!prompt && (
-              <div className="space-y-3">
-                <Button
-                  onClick={handleGeneratePrompt}
-                  disabled={promptLoading}
-                  size="lg"
-                  className="gap-2 bg-emerald-950 hover:bg-emerald-900"
-                >
-                  {promptLoading && <Loader2 aria-hidden className="h-4 w-4 animate-spin" />}
-                  {promptLoading ? t('analyze.generatingPrompt') : t('analyze.generatePrompt')}
-                </Button>
-                {promptError && (
-                  <p className="rounded-md border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">
-                    {promptError}
-                  </p>
-                )}
-              </div>
-            )}
-            {prompt && (
-              <div>
-                <p className="mb-4 rounded-md bg-stone-50 p-4 text-sm leading-6 whitespace-pre-wrap text-stone-700">
-                  {prompt}
-                </p>
-                <Button
-                  size="sm"
-                  variant="secondary"
-                  className="gap-2 bg-white shadow-sm"
-                  onClick={handleCopyPrompt}
-                >
-                  <Copy aria-hidden className="h-4 w-4" />
-                  {copied ? t('analyze.promptCopied') : t('analyze.copyPrompt')}
-                </Button>
-              </div>
-            )}
+    <main className="min-h-dvh bg-[#f2f0eb] px-4 py-4 pb-[calc(2rem+env(safe-area-inset-bottom))] sm:py-6">
+      <div className="mx-auto w-full max-w-md lg:max-w-5xl">
+        <div className="mb-4 flex items-center justify-between gap-3">
+          <Button variant="secondary" size="icon" asChild>
+            <Link href="/" aria-label={t('common.back')}>
+              <ArrowLeft aria-hidden className="h-5 w-5" />
+            </Link>
+          </Button>
+          <div className="min-w-0 flex-1 text-center">
+            <p className="truncate text-xs font-semibold text-stone-500">{t('analyze.aiLabel')}</p>
+            <h1 className="truncate text-lg font-bold text-stone-950">
+              {t('analyze.resultTitle')}
+            </h1>
           </div>
-        </section>
+          <span className="rounded-full bg-[#d4e9e2] px-3 py-2 text-xs font-semibold text-[#006241]">
+            {t(`analyze.categories.${analysis.category}`)}
+          </span>
+        </div>
+
+        <div className="grid gap-4 lg:grid-cols-[0.88fr_1.12fr] lg:items-start">
+          <aside className="lg:sticky lg:top-6">
+            {photoUrl && photo && (
+              <div className="overflow-hidden rounded-[1.5rem] border border-white bg-white p-2 shadow-[0_0_1px_rgba(0,0,0,0.14),0_8px_20px_rgba(0,0,0,0.08)]">
+                <Image
+                  src={photoUrl}
+                  alt="captured"
+                  width={1024}
+                  height={768}
+                  className="aspect-[4/3] max-h-[42vh] w-full rounded-[1.1rem] object-cover lg:max-h-[70vh] lg:object-contain"
+                  unoptimized
+                />
+              </div>
+            )}
+          </aside>
+
+          <section className="space-y-4">
+            <AnalysisCard analysis={analysis} />
+
+            <div className="rounded-[1.5rem] border border-stone-200 bg-white p-5 shadow-[0_0_1px_rgba(0,0,0,0.14),0_4px_12px_rgba(0,0,0,0.08)]">
+              <div className="mb-4 flex items-center gap-2">
+                <span className="flex h-9 w-9 items-center justify-center rounded-full bg-[#d4e9e2] text-[#006241]">
+                  <WandSparkles aria-hidden className="h-4 w-4" />
+                </span>
+                <h2 className="font-semibold text-stone-950">{t('analyze.promptHeading')}</h2>
+              </div>
+              {!prompt && (
+                <div className="space-y-3">
+                  <Button
+                    onClick={handleGeneratePrompt}
+                    disabled={promptLoading}
+                    size="lg"
+                    className="w-full gap-2"
+                  >
+                    {promptLoading && <Loader2 aria-hidden className="h-4 w-4 animate-spin" />}
+                    {promptLoading ? t('analyze.generatingPrompt') : t('analyze.generatePrompt')}
+                  </Button>
+                  {promptError && (
+                    <p className="rounded-md border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">
+                      {promptError}
+                    </p>
+                  )}
+                </div>
+              )}
+              {prompt && (
+                <div>
+                  <p className="mb-4 max-h-[45vh] overflow-auto rounded-xl bg-[#f2f0eb] p-4 text-sm leading-6 whitespace-pre-wrap text-stone-700">
+                    {prompt}
+                  </p>
+                  <div className="flex flex-col gap-2 sm:flex-row">
+                    <Button
+                      size="sm"
+                      variant="secondary"
+                      className="gap-2 bg-white shadow-sm"
+                      onClick={handleCopyPrompt}
+                    >
+                      <Copy aria-hidden className="h-4 w-4" />
+                      {copied ? t('analyze.promptCopied') : t('analyze.copyPrompt')}
+                    </Button>
+                    <Button
+                      size="sm"
+                      className="gap-2"
+                      onClick={handleGeneratePrompt}
+                      disabled={promptLoading}
+                    >
+                      {promptLoading && <Loader2 aria-hidden className="h-4 w-4 animate-spin" />}
+                      {promptLoading
+                        ? t('analyze.generatingPrompt')
+                        : t('analyze.regeneratePrompt')}
+                    </Button>
+                  </div>
+                </div>
+              )}
+            </div>
+          </section>
+        </div>
       </div>
     </main>
   );

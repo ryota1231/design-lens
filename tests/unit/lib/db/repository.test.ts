@@ -1,7 +1,13 @@
 import { beforeEach, describe, expect, it } from 'vitest';
 import 'fake-indexeddb/auto';
 import { db } from '@/lib/db/schema';
-import { getAnalysisWithPhoto, listRecentAnalyses, savePhotoWithAnalysis } from '@/lib/db/repository';
+import {
+  getAnalysisWithPhoto,
+  getPromptByAnalysisId,
+  listRecentAnalyses,
+  savePhotoWithAnalysis,
+  savePrompt,
+} from '@/lib/db/repository';
 import type { AnalysisResult } from '@/types/analysis';
 
 const sampleAnalysis: AnalysisResult = {
@@ -64,5 +70,22 @@ describe('repository', () => {
     const result = await getAnalysisWithPhoto(analysisId);
     expect(result?.analysis.id).toBe(analysisId);
     expect(result?.photo).toBeDefined();
+  });
+
+  it('should replace an existing prompt for the same analysis', async () => {
+    const blob = new Blob(['x'], { type: 'image/jpeg' });
+    const { analysisId } = await savePhotoWithAnalysis({
+      blob,
+      thumbnailBlob: blob,
+      analysis: sampleAnalysis,
+      language: 'ja',
+    });
+
+    await savePrompt({ analysisId, prompt: 'English prompt' });
+    await savePrompt({ analysisId, prompt: '日本語のプロンプト' });
+
+    const prompt = await getPromptByAnalysisId(analysisId);
+    expect(prompt?.prompt).toBe('日本語のプロンプト');
+    expect(await db.prompts.where('analysisId').equals(analysisId).count()).toBe(1);
   });
 });

@@ -22,15 +22,15 @@ function SectionCard({
 }) {
   return (
     <Card className="border-stone-200">
-      <CardHeader className="p-5 pb-3">
+      <CardHeader className="p-4 pb-3">
         <CardTitle className="flex items-center gap-2 text-base text-stone-950">
-          <span className="flex h-8 w-8 items-center justify-center rounded-md bg-stone-100 text-stone-700">
+          <span className="flex h-8 w-8 items-center justify-center rounded-full bg-[#d4e9e2] text-[#006241]">
             {icon}
           </span>
           {title}
         </CardTitle>
       </CardHeader>
-      <CardContent className="p-5 pt-0 text-sm leading-6 text-stone-700">{children}</CardContent>
+      <CardContent className="p-4 pt-0 text-sm leading-6 text-stone-700">{children}</CardContent>
     </Card>
   );
 }
@@ -40,10 +40,10 @@ export function AnalysisCard({ analysis }: Props) {
 
   return (
     <div className="space-y-4">
-      <Card className="border-emerald-950 bg-emerald-950 text-white">
+      <Card className="border-[#1E3932] bg-[#1E3932] text-white">
         <CardHeader className="flex-row items-start justify-between gap-3 space-y-0 p-5 pb-3">
-          <CardTitle className="text-base text-emerald-50">{t('concept')}</CardTitle>
-          <div className="flex shrink-0 items-center gap-2 rounded-md bg-white/10 px-3 py-2 text-xs text-emerald-50">
+          <CardTitle className="text-base text-white">{t('concept')}</CardTitle>
+          <div className="flex shrink-0 items-center gap-2 rounded-full bg-white/10 px-3 py-2 text-xs text-white/90">
             <Tag aria-hidden className="h-3.5 w-3.5" />
             <span>{t('category')}</span>
             <span className="font-semibold">{t(`categories.${analysis.category}`)}</span>
@@ -90,7 +90,7 @@ export function AnalysisCard({ analysis }: Props) {
         </SectionCard>
       )}
 
-      <p className="rounded-md border border-amber-200 bg-amber-50 px-4 py-3 text-xs leading-5 text-amber-900">
+      <p className="rounded-xl border border-[#dfc49d] bg-[#faf6ee] px-4 py-3 text-xs leading-5 text-stone-700">
         {t('noteAiInference')}
       </p>
     </div>

@@ -32,8 +32,8 @@ export function CameraCapture({ onCapture, onCancel }: Props) {
 
   if (status === 'denied') {
     return (
-      <div className="flex min-h-[calc(100vh-65px)] flex-col items-center justify-center gap-4 p-6">
-        <div className="flex max-w-md flex-col items-center gap-4 rounded-lg border border-red-200 bg-white p-6 text-center shadow-sm">
+      <div className="flex min-h-dvh flex-col items-center justify-center gap-4 p-6">
+        <div className="flex max-w-md flex-col items-center gap-4 rounded-xl border border-red-200 bg-white p-6 text-center shadow-sm">
           <CircleAlert aria-hidden className="h-8 w-8 text-red-600" />
           <p className="text-red-700">{t('permissionDenied')}</p>
           <Button variant="secondary" className="gap-2 bg-white shadow-sm" onClick={onCancel}>

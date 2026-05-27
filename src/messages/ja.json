@@ -26,6 +26,8 @@
   },
   "analyze": {
     "analyzing": "AIが観察中...",
+    "resultTitle": "観察結果",
+    "aiLabel": "AIによる観察",
     "noteAiInference": "※AIによる観察と推測です。正解ではありません。",
     "concept": "設計意図",
     "typography": "文字の特徴",
@@ -44,6 +46,7 @@
     "generatePrompt": "AIで再現するプロンプトを作る",
     "generatingPrompt": "プロンプトを生成中...",
     "promptHeading": "再現プロンプト",
+    "regeneratePrompt": "日本語で再生成",
     "copyPrompt": "プロンプトをコピー",
     "promptCopied": "コピーしました"
   },

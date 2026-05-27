@@ -26,6 +26,8 @@
   },
   "analyze": {
     "analyzing": "AI is observing...",
+    "resultTitle": "Observation result",
+    "aiLabel": "AI observation",
     "noteAiInference": "* This is AI's observation and inference, not a definitive answer.",
     "concept": "Design intent",
     "typography": "Typography",
@@ -44,6 +46,7 @@
     "generatePrompt": "Make a prompt to recreate with AI",
     "generatingPrompt": "Generating prompt...",
     "promptHeading": "Reproduction prompt",
+    "regeneratePrompt": "Regenerate in Japanese",
     "copyPrompt": "Copy prompt",
     "promptCopied": "Copied"
   },
