@@ -46,22 +46,22 @@ export function CameraCapture({ onCapture, onCancel }: Props) {
   }
 
   return (
-    <div className="fixed inset-0 flex flex-col bg-black">
-      <video ref={videoRef} className="w-full flex-1 object-cover" playsInline muted autoPlay />
+    <div className="fixed inset-x-0 top-0 z-50 h-[100dvh] overflow-hidden bg-black">
+      <video ref={videoRef} className="absolute inset-0 h-full w-full object-cover" playsInline muted autoPlay />
       {status === 'starting' && (
-        <div className="absolute inset-0 flex items-center justify-center bg-black/30 text-white">
+        <div className="absolute inset-0 z-10 flex items-center justify-center bg-black/30 text-white">
           <div className="rounded-md bg-black/50 px-4 py-3 text-sm font-medium backdrop-blur">
             {t('starting')}
           </div>
         </div>
       )}
       {error && status === 'error' && (
-        <div className="absolute top-4 right-4 left-4 rounded-md bg-red-600 p-3 text-white shadow-lg">
+        <div className="absolute top-4 right-4 left-4 z-30 rounded-md bg-red-600 p-3 text-white shadow-lg">
           {error}
         </div>
       )}
-      <div className="pointer-events-none absolute inset-4 rounded-lg border border-white/30" />
-      <div className="grid grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-center gap-4 bg-black/70 p-6 pb-[calc(1.5rem+env(safe-area-inset-bottom))]">
+      <div className="pointer-events-none absolute inset-x-4 top-4 bottom-[7rem] z-10 rounded-lg border border-white/30 sm:bottom-[8rem]" />
+      <div className="absolute inset-x-0 bottom-0 z-20 grid grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-center gap-4 bg-black/80 px-4 pt-4 pb-[calc(1rem+env(safe-area-inset-bottom))] sm:px-6 sm:pt-6 sm:pb-[calc(1.5rem+env(safe-area-inset-bottom))]">
         <Button
           variant="ghost"
           className="justify-self-start gap-2 text-white hover:bg-white/10"
@@ -74,7 +74,7 @@ export function CameraCapture({ onCapture, onCancel }: Props) {
           aria-label={t('shutter')}
           onClick={handleShutter}
           disabled={status !== 'ready'}
-          className="grid h-[4.5rem] w-[4.5rem] place-items-center justify-self-center rounded-full border-4 border-white bg-white text-stone-950 shadow-xl transition-transform active:scale-95 disabled:opacity-50"
+          className="grid h-16 w-16 place-items-center justify-self-center rounded-full border-4 border-white bg-white text-stone-950 shadow-xl transition-transform active:scale-95 disabled:opacity-50 sm:h-[4.5rem] sm:w-[4.5rem]"
         >
           <Camera aria-hidden className="h-7 w-7" />
         </button>
