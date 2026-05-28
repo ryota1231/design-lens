@@ -60,5 +60,18 @@ describe('POST /api/analyze', () => {
       ),
     );
     expect(res.status).toBe(500);
+    await expect(res.json()).resolves.toEqual({ error: 'analysis_failed' });
+  });
+
+  it('should return a billing error when Claude reports insufficient credits', async () => {
+    vi.mocked(analyzeImage).mockRejectedValue(new Error('credit balance is too low'));
+    const res = await POST(
+      makeRequest(
+        { image: 'data:image/jpeg;base64,xxx', language: 'ja' },
+        { 'x-forwarded-for': '1.2.3.6' },
+      ),
+    );
+    expect(res.status).toBe(402);
+    await expect(res.json()).resolves.toEqual({ error: 'anthropic_billing' });
   });
 });

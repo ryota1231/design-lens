@@ -10,6 +10,10 @@ import { blobToDataUrl, compressImage } from '@/lib/image/compress';
 import { useRouter } from '@/lib/i18n/routing';
 import { AnalysisResultSchema, type AnalysisResult } from '@/types/analysis';
 
+type AnalyzeErrorResponse = {
+  error?: string;
+};
+
 export default function CapturePage() {
   const t = useTranslations();
   const router = useRouter();
@@ -33,13 +37,15 @@ export default function CapturePage() {
       });
 
       if (res.status === 429) {
-        setErrorMsg(t('errors.rateLimited'));
+        const error = await readAnalyzeError(res);
+        setErrorMsg(getAnalyzeErrorMessage(error, t));
         setPhase('error');
         return;
       }
 
       if (!res.ok) {
-        setErrorMsg(t('errors.analysisFailed'));
+        const error = await readAnalyzeError(res);
+        setErrorMsg(getAnalyzeErrorMessage(error, t));
         setPhase('error');
         return;
       }
@@ -96,4 +102,34 @@ export default function CapturePage() {
   }
 
   return <CameraCapture onCapture={handleCapture} onCancel={() => router.push('/')} />;
+}
+
+async function readAnalyzeError(res: Response): Promise<string | undefined> {
+  try {
+    const json = (await res.json()) as AnalyzeErrorResponse;
+    return json.error;
+  } catch {
+    return undefined;
+  }
+}
+
+function getAnalyzeErrorMessage(
+  error: string | undefined,
+  t: ReturnType<typeof useTranslations>,
+): string {
+  switch (error) {
+    case 'rate_limited':
+    case 'anthropic_rate_limited':
+      return t('errors.rateLimited');
+    case 'anthropic_auth_failed':
+      return t('errors.anthropicAuthFailed');
+    case 'anthropic_billing':
+      return t('errors.anthropicBilling');
+    case 'anthropic_unavailable':
+      return t('errors.anthropicUnavailable');
+    case 'image_too_large':
+      return t('errors.imageTooLarge');
+    default:
+      return t('errors.analysisFailed');
+  }
 }

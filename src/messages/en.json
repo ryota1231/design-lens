@@ -57,6 +57,10 @@
   },
   "errors": {
     "analysisFailed": "Analysis failed. Please try again later.",
+    "anthropicAuthFailed": "Analysis failed. Please check the ANTHROPIC_API_KEY environment variable in Vercel.",
+    "anthropicBilling": "Analysis failed. Please check your Anthropic credit balance or billing settings.",
+    "anthropicUnavailable": "Claude API is temporarily unavailable. Please try again later.",
+    "imageTooLarge": "The image may be too large. Please retake it from a little farther away.",
     "rateLimited": "Too many requests in a short time. Please wait a bit.",
     "promptFailed": "Prompt generation failed. Please try again later.",
     "saveFailed": "Failed to save.",

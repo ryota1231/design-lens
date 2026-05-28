@@ -57,6 +57,10 @@
   },
   "errors": {
     "analysisFailed": "AI解析に失敗しました。時間をおいて再度お試しください。",
+    "anthropicAuthFailed": "AI解析に失敗しました。Vercelの環境変数 ANTHROPIC_API_KEY を確認してください。",
+    "anthropicBilling": "AI解析に失敗しました。Anthropicのクレジット残高または請求設定を確認してください。",
+    "anthropicUnavailable": "Claude APIが一時的に混み合っています。少し時間をおいて再度お試しください。",
+    "imageTooLarge": "画像サイズが大きすぎる可能性があります。少し離れて撮影し直してください。",
     "rateLimited": "短時間に多くのリクエストがありました。少し待ってから試してください。",
     "promptFailed": "プロンプト生成に失敗しました。時間をおいて再度お試しください。",
     "saveFailed": "保存に失敗しました。",
