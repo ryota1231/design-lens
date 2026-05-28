@@ -6,7 +6,7 @@ import { useEffect, useState } from 'react';
 import { useTranslations } from 'next-intl';
 import { Button } from '@/components/ui/button';
 import { listRecentAnalyses } from '@/lib/db/repository';
-import { db, type AnalysisRecord } from '@/lib/db/schema';
+import { db, type AnalysisRecord, type PhotoRecord } from '@/lib/db/schema';
 import { Link } from '@/lib/i18n/routing';
 
 interface Item {
@@ -28,10 +28,10 @@ export function PhotoGrid() {
         const enriched = await Promise.all(
           analyses.map(async (analysis) => {
             const photo = await db.photos.get(analysis.photoId);
-            const url = photo ? URL.createObjectURL(photo.thumbnailBlob) : null;
-            if (url) urls.push(url);
+            const src = photo ? getPhotoThumbnailSrc(photo) : null;
+            if (src?.kind === 'object-url') urls.push(src.value);
 
-            return { analysis, thumbUrl: url };
+            return { analysis, thumbUrl: src?.value ?? null };
           }),
         );
 
@@ -95,4 +95,16 @@ export function PhotoGrid() {
       ))}
     </ul>
   );
+}
+
+function getPhotoThumbnailSrc(photo: PhotoRecord): { kind: 'object-url' | 'data-url'; value: string } | null {
+  if (photo.thumbnailBlob) {
+    return { kind: 'object-url', value: URL.createObjectURL(photo.thumbnailBlob) };
+  }
+
+  if (photo.thumbnailDataUrl) {
+    return { kind: 'data-url', value: photo.thumbnailDataUrl };
+  }
+
+  return null;
 }

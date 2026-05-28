@@ -26,6 +26,17 @@ describe('DesignLensDB', () => {
     expect(photo!.id).toBe('photo-1');
   });
 
+  it('should store and retrieve a data URL photo fallback', async () => {
+    await db.photos.add({
+      id: 'photo-data-url-1',
+      imageDataUrl: 'data:image/jpeg;base64,eA==',
+      thumbnailDataUrl: 'data:image/jpeg;base64,eA==',
+      createdAt: Date.now(),
+    });
+    const photo = await db.photos.get('photo-data-url-1');
+    expect(photo?.imageDataUrl).toBe('data:image/jpeg;base64,eA==');
+  });
+
   it('should query analyses by photoId', async () => {
     await db.analyses.add({
       id: 'a-1',

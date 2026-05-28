@@ -3,8 +3,10 @@ import type { Category } from '@/types/analysis';
 
 export interface PhotoRecord {
   id: string;
-  blob: Blob;
-  thumbnailBlob: Blob;
+  blob?: Blob;
+  thumbnailBlob?: Blob;
+  imageDataUrl?: string;
+  thumbnailDataUrl?: string;
   createdAt: number;
 }
 

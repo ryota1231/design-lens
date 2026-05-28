@@ -34,23 +34,58 @@ export async function savePhotoWithAnalysis(args: {
   const analysisId = uuid();
   const now = Date.now();
 
-  await db.transaction('rw', db.photos, db.analyses, async () => {
-    await db.photos.add({
-      id: photoId,
-      blob: args.blob,
-      thumbnailBlob: args.thumbnailBlob,
-      createdAt: now,
-    });
-    await db.analyses.add({
-      id: analysisId,
+  try {
+    await savePhotoRecord({
       photoId,
-      ...args.analysis,
+      analysisId,
+      now,
+      photo: {
+        id: photoId,
+        blob: args.blob,
+        thumbnailBlob: args.thumbnailBlob,
+        createdAt: now,
+      },
+      analysis: args.analysis,
       language: args.language,
-      createdAt: now,
     });
-  });
+  } catch (blobError) {
+    console.warn('[db] Blob保存に失敗したためData URL保存へ切り替えます', blobError);
+    await savePhotoRecord({
+      photoId,
+      analysisId,
+      now,
+      photo: {
+        id: photoId,
+        imageDataUrl: await blobToDataUrl(args.blob),
+        thumbnailDataUrl: await blobToDataUrl(args.thumbnailBlob),
+        createdAt: now,
+      },
+      analysis: args.analysis,
+      language: args.language,
+    });
+  }
 
   return { photoId, analysisId };
+}
+
+async function savePhotoRecord(args: {
+  photoId: string;
+  analysisId: string;
+  now: number;
+  photo: PhotoRecord;
+  analysis: AnalysisResult;
+  language: 'ja' | 'en';
+}): Promise<void> {
+  await db.transaction('rw', db.photos, db.analyses, async () => {
+    await db.photos.add(args.photo);
+    await db.analyses.add({
+      id: args.analysisId,
+      photoId: args.photoId,
+      ...args.analysis,
+      language: args.language,
+      createdAt: args.now,
+    });
+  });
 }
 
 export async function listRecentAnalyses(args: { limit: number }): Promise<AnalysisRecord[]> {
@@ -89,4 +124,13 @@ export async function getPromptByAnalysisId(
   analysisId: string,
 ): Promise<PromptRecord | undefined> {
   return db.prompts.where('analysisId').equals(analysisId).first();
+}
+
+function blobToDataUrl(blob: Blob): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(reader.result as string);
+    reader.onerror = reject;
+    reader.readAsDataURL(blob);
+  });
 }

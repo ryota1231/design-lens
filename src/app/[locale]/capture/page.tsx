@@ -14,6 +14,8 @@ type AnalyzeErrorResponse = {
   error?: string;
 };
 
+const TEMP_ANALYSIS_KEY_PREFIX = 'design-lens:temp-analysis:';
+
 export default function CapturePage() {
   const t = useTranslations();
   const router = useRouter();
@@ -69,8 +71,20 @@ export default function CapturePage() {
         analysisId = saved.analysisId;
       } catch (e) {
         console.error('[capture] save failed', e);
-        setErrorMsg(t('errors.saveFailed'));
-        setPhase('error');
+        const fallbackId = await saveTemporaryAnalysis({
+          imageDataUrl: dataUrl,
+          thumbnailBlob: thumb,
+          analysis: parsed.data,
+          language: locale,
+        });
+
+        if (!fallbackId) {
+          setErrorMsg(t('errors.saveFailed'));
+          setPhase('error');
+          return;
+        }
+
+        router.push(`/analyze/${fallbackId}`);
         return;
       }
 
@@ -140,5 +154,32 @@ function getAnalyzeErrorMessage(
       return t('errors.imageTooLarge');
     default:
       return t('errors.analysisFailed');
+  }
+}
+
+async function saveTemporaryAnalysis(args: {
+  imageDataUrl: string;
+  thumbnailBlob: Blob;
+  analysis: AnalysisResult;
+  language: 'ja' | 'en';
+}): Promise<string | null> {
+  try {
+    const id = `temp-${Date.now()}-${Math.random().toString(36).slice(2)}`;
+    const thumbnailDataUrl = await blobToDataUrl(args.thumbnailBlob);
+    sessionStorage.setItem(
+      `${TEMP_ANALYSIS_KEY_PREFIX}${id}`,
+      JSON.stringify({
+        id,
+        imageDataUrl: args.imageDataUrl,
+        thumbnailDataUrl,
+        analysis: args.analysis,
+        language: args.language,
+        createdAt: Date.now(),
+      }),
+    );
+    return id;
+  } catch (e) {
+    console.error('[capture] temporary save failed', e);
+    return null;
   }
 }

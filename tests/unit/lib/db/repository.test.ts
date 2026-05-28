@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import 'fake-indexeddb/auto';
 import { db } from '@/lib/db/schema';
 import {
@@ -76,6 +76,32 @@ describe('repository', () => {
       if (cryptoDescriptor) {
         Object.defineProperty(globalThis, 'crypto', cryptoDescriptor);
       }
+    }
+  });
+
+  it('should fall back to data URL storage when Blob storage fails', async () => {
+    const originalAdd = db.photos.add.bind(db.photos);
+    const addSpy = vi.spyOn(db.photos, 'add');
+    type PhotoAddResult = ReturnType<typeof db.photos.add>;
+    addSpy
+      .mockImplementationOnce(() => Promise.reject(new Error('Blob storage failed')) as PhotoAddResult)
+      .mockImplementation((record) => originalAdd(record));
+
+    try {
+      const blob = new Blob(['x'], { type: 'image/jpeg' });
+      const { photoId } = await savePhotoWithAnalysis({
+        blob,
+        thumbnailBlob: blob,
+        analysis: sampleAnalysis,
+        language: 'ja',
+      });
+
+      const photo = await db.photos.get(photoId);
+      expect(photo?.blob).toBeUndefined();
+      expect(photo?.imageDataUrl).toMatch(/^data:image\/jpeg;base64,/);
+      expect(photo?.thumbnailDataUrl).toMatch(/^data:image\/jpeg;base64,/);
+    } finally {
+      addSpy.mockRestore();
     }
   });
 

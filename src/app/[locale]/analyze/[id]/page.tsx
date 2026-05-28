@@ -9,6 +9,9 @@ import { Button } from '@/components/ui/button';
 import { getAnalysisWithPhoto, getPromptByAnalysisId, savePrompt } from '@/lib/db/repository';
 import type { AnalysisRecord, PhotoRecord } from '@/lib/db/schema';
 import { Link } from '@/lib/i18n/routing';
+import { AnalysisResultSchema } from '@/types/analysis';
+
+const TEMP_ANALYSIS_KEY_PREFIX = 'design-lens:temp-analysis:';
 
 export default function AnalyzeDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
@@ -29,7 +32,16 @@ export default function AnalyzeDetailPage({ params }: { params: Promise<{ id: st
       try {
         const result = await getAnalysisWithPhoto(id);
         if (!result) {
-          setLoadStatus('missing');
+          const temporary = getTemporaryAnalysisWithPhoto(id);
+          if (!temporary) {
+            setLoadStatus('missing');
+            return;
+          }
+
+          setAnalysis(temporary.analysis);
+          setPhoto(temporary.photo);
+          setPhotoUrl(temporary.photo.imageDataUrl ?? null);
+          setLoadStatus('ready');
           return;
         }
 
@@ -37,8 +49,9 @@ export default function AnalyzeDetailPage({ params }: { params: Promise<{ id: st
         setPhoto(result.photo ?? null);
 
         if (result.photo) {
-          urlForCleanup = URL.createObjectURL(result.photo.blob);
-          setPhotoUrl(urlForCleanup);
+          const src = getPhotoImageSrc(result.photo);
+          if (src.kind === 'object-url') urlForCleanup = src.value;
+          setPhotoUrl(src.value);
         }
 
         const existing = await getPromptByAnalysisId(id);
@@ -228,4 +241,59 @@ export default function AnalyzeDetailPage({ params }: { params: Promise<{ id: st
       </div>
     </main>
   );
+}
+
+function getPhotoImageSrc(photo: PhotoRecord): { kind: 'object-url' | 'data-url'; value: string } {
+  if (photo.blob) {
+    return { kind: 'object-url', value: URL.createObjectURL(photo.blob) };
+  }
+
+  return { kind: 'data-url', value: photo.imageDataUrl ?? '' };
+}
+
+function getTemporaryAnalysisWithPhoto(
+  id: string,
+): { analysis: AnalysisRecord; photo: PhotoRecord } | null {
+  try {
+    const raw = sessionStorage.getItem(`${TEMP_ANALYSIS_KEY_PREFIX}${id}`);
+    if (!raw) return null;
+
+    const payload = JSON.parse(raw) as {
+      imageDataUrl?: unknown;
+      thumbnailDataUrl?: unknown;
+      analysis?: unknown;
+      language?: unknown;
+      createdAt?: unknown;
+    };
+    const analysis = AnalysisResultSchema.safeParse(payload.analysis);
+    if (
+      !analysis.success ||
+      typeof payload.imageDataUrl !== 'string' ||
+      typeof payload.thumbnailDataUrl !== 'string' ||
+      (payload.language !== 'ja' && payload.language !== 'en')
+    ) {
+      return null;
+    }
+
+    const createdAt = typeof payload.createdAt === 'number' ? payload.createdAt : Date.now();
+    const photoId = `photo-${id}`;
+    return {
+      analysis: {
+        id,
+        photoId,
+        ...analysis.data,
+        language: payload.language,
+        createdAt,
+      },
+      photo: {
+        id: photoId,
+        imageDataUrl: payload.imageDataUrl,
+        thumbnailDataUrl: payload.thumbnailDataUrl,
+        createdAt,
+      },
+    };
+  } catch (e) {
+    console.error('[analyze] temporary load failed', e);
+    return null;
+  }
 }
