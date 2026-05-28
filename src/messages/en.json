@@ -63,7 +63,7 @@
     "imageTooLarge": "The image may be too large. Please retake it from a little farther away.",
     "rateLimited": "Too many requests in a short time. Please wait a bit.",
     "promptFailed": "Prompt generation failed. Please try again later.",
-    "saveFailed": "Failed to save.",
+    "saveFailed": "Analysis completed, but saving to this device failed. Please reload the browser and try again.",
     "loadFailed": "Failed to load."
   }
 }

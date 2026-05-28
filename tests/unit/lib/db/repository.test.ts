@@ -45,6 +45,40 @@ describe('repository', () => {
     expect(a?.concept).toBe('セール訴求');
   });
 
+  it('should save photo when crypto.randomUUID is unavailable', async () => {
+    const cryptoDescriptor = Object.getOwnPropertyDescriptor(globalThis, 'crypto');
+    Object.defineProperty(globalThis, 'crypto', {
+      configurable: true,
+      value: {
+        getRandomValues: (array: Uint8Array) => {
+          for (let i = 0; i < array.length; i += 1) {
+            array[i] = i + 1;
+          }
+          return array;
+        },
+      },
+    });
+
+    try {
+      const blob = new Blob(['x'], { type: 'image/jpeg' });
+      const { photoId, analysisId } = await savePhotoWithAnalysis({
+        blob,
+        thumbnailBlob: blob,
+        analysis: sampleAnalysis,
+        language: 'ja',
+      });
+
+      expect(photoId).toMatch(
+        /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/,
+      );
+      expect(await db.analyses.get(analysisId)).toBeDefined();
+    } finally {
+      if (cryptoDescriptor) {
+        Object.defineProperty(globalThis, 'crypto', cryptoDescriptor);
+      }
+    }
+  });
+
   it('should list recent analyses', async () => {
     const blob = new Blob(['x'], { type: 'image/jpeg' });
     for (let i = 0; i < 3; i += 1) {

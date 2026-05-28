@@ -58,12 +58,21 @@ export default function CapturePage() {
         return;
       }
 
-      const { analysisId } = await savePhotoWithAnalysis({
-        blob: compressed,
-        thumbnailBlob: thumb,
-        analysis: parsed.data,
-        language: locale,
-      });
+      let analysisId: string;
+      try {
+        const saved = await savePhotoWithAnalysis({
+          blob: compressed,
+          thumbnailBlob: thumb,
+          analysis: parsed.data,
+          language: locale,
+        });
+        analysisId = saved.analysisId;
+      } catch (e) {
+        console.error('[capture] save failed', e);
+        setErrorMsg(t('errors.saveFailed'));
+        setPhase('error');
+        return;
+      }
 
       router.push(`/analyze/${analysisId}`);
     } catch (e) {
