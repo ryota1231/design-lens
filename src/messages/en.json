@@ -14,8 +14,28 @@
     "title": "Observe design in the wild",
     "subtitle": "Photograph street signs and POPs - AI will read the designer's intent.",
     "capture": "Capture",
-    "viewArchive": "View archive",
-    "vision": "Train your eye for design intent in the age of AI"
+    "viewArchive": "View collection",
+    "vision": "Train your eye for design intent in the age of AI",
+    "splashKicker": "Design observation app",
+    "splashCaption": "Turn what you find into a design lesson.",
+    "onboarding": {
+      "goToSlide": "View slide {number}",
+      "slide1": {
+        "label": "Start with a photo",
+        "title": "Capture once. See the intent.",
+        "body": "Photograph a sign, POP, or logo. AI organizes the color, type, and composition choices."
+      },
+      "slide2": {
+        "label": "Keep discoveries",
+        "title": "Collect your observations",
+        "body": "Save interesting design examples on your phone and revisit them like a pocket archive."
+      },
+      "slide3": {
+        "label": "Use it creatively",
+        "title": "Create prompts for AI",
+        "body": "Turn the analysis into a Japanese prompt for recreating a similar mood and direction."
+      }
+    }
   },
   "camera": {
     "starting": "Starting camera...",
