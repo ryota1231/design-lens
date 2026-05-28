@@ -2,7 +2,7 @@ import Anthropic from '@anthropic-ai/sdk';
 import { AnalysisResultSchema, type AnalysisResult, type Category } from '@/types/analysis';
 import { buildAnalyzeSystemPrompt, buildReproductionPromptSystem } from './prompts';
 
-const MODEL = 'claude-sonnet-4-20250514';
+const MODEL = 'claude-sonnet-4-6';
 const CATEGORY_VALUES = ['sign', 'logo', 'pop', 'signage', 'other'] as const;
 
 function getClient(): Anthropic {
