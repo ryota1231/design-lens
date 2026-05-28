@@ -143,50 +143,59 @@ export default function AnalyzeDetailPage({ params }: { params: Promise<{ id: st
   }
 
   return (
-    <main className="min-h-dvh bg-[#f2f0eb] px-4 py-4 pb-[calc(2rem+env(safe-area-inset-bottom))] sm:py-6">
-      <div className="mx-auto w-full max-w-md lg:max-w-5xl">
-        <div className="mb-4 flex items-center justify-between gap-3">
-          <Button variant="secondary" size="icon" asChild>
+    <main className="min-h-dvh overflow-x-hidden bg-[#f7f7f4] px-3 py-3 pb-[calc(8rem+env(safe-area-inset-bottom))] sm:px-4 sm:py-6 lg:pb-10">
+      <div className="mx-auto w-full max-w-[31rem] min-w-0 lg:max-w-5xl">
+        <div className="sticky top-0 z-20 -mx-3 mb-3 grid grid-cols-[2.75rem_minmax(0,1fr)_auto] items-center gap-3 bg-[#f7f7f4]/95 px-3 py-3 backdrop-blur sm:static sm:mx-0 sm:bg-transparent sm:px-0 sm:backdrop-blur-none">
+          <Button
+            variant="secondary"
+            size="icon"
+            className="h-11 w-11 rounded-full bg-white shadow-[0_4px_12px_rgba(15,23,42,0.10)]"
+            asChild
+          >
             <Link href="/" aria-label={t('common.back')}>
               <ArrowLeft aria-hidden className="h-5 w-5" />
             </Link>
           </Button>
-          <div className="min-w-0 flex-1 text-center">
-            <p className="truncate text-xs font-semibold text-stone-500">{t('analyze.aiLabel')}</p>
-            <h1 className="truncate text-lg font-bold text-stone-950">
+          <div className="min-w-0 text-left">
+            <p className="truncate text-[11px] font-semibold text-stone-500">
+              {t('analyze.aiLabel')}
+            </p>
+            <h1 className="truncate text-xl leading-tight font-bold text-stone-950">
               {t('analyze.resultTitle')}
             </h1>
           </div>
-          <span className="rounded-full bg-[#d4e9e2] px-3 py-2 text-xs font-semibold text-[#006241]">
+          <span className="max-w-[8.5rem] truncate rounded-full bg-[#dff6f5] px-3 py-2 text-xs font-bold text-[#06727b]">
             {t(`analyze.categories.${analysis.category}`)}
           </span>
         </div>
 
-        <div className="grid gap-4 lg:grid-cols-[0.88fr_1.12fr] lg:items-start">
-          <aside className="lg:sticky lg:top-6">
+        <div className="grid min-w-0 gap-4 lg:grid-cols-[0.88fr_1.12fr] lg:items-start">
+          <aside className="min-w-0 lg:sticky lg:top-6">
             {photoUrl && photo && (
-              <div className="overflow-hidden rounded-[1.5rem] border border-white bg-white p-2 shadow-[0_0_1px_rgba(0,0,0,0.14),0_8px_20px_rgba(0,0,0,0.08)]">
+              <div className="w-full max-w-full overflow-hidden rounded-[1.6rem] border border-white bg-white p-1.5 shadow-[0_0_1px_rgba(0,0,0,0.14),0_10px_24px_rgba(15,23,42,0.10)]">
                 <Image
                   src={photoUrl}
                   alt="captured"
                   width={1024}
                   height={768}
-                  className="aspect-[4/3] max-h-[42vh] w-full rounded-[1.1rem] object-cover lg:max-h-[70vh] lg:object-contain"
+                  className="block aspect-[4/3] max-h-[34vh] w-full max-w-full rounded-[1.25rem] object-cover lg:max-h-[70vh] lg:object-contain"
                   unoptimized
                 />
               </div>
             )}
           </aside>
 
-          <section className="space-y-4">
+          <section className="min-w-0 space-y-4">
             <AnalysisCard analysis={analysis} />
 
-            <div className="rounded-[1.5rem] border border-stone-200 bg-white p-5 shadow-[0_0_1px_rgba(0,0,0,0.14),0_4px_12px_rgba(0,0,0,0.08)]">
+            <div className="min-w-0 rounded-[1.5rem] border border-white bg-white p-5 shadow-[0_0_1px_rgba(0,0,0,0.14),0_8px_18px_rgba(15,23,42,0.08)]">
               <div className="mb-4 flex items-center gap-2">
-                <span className="flex h-9 w-9 items-center justify-center rounded-full bg-[#d4e9e2] text-[#006241]">
+                <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#dff6f5] text-[#06727b]">
                   <WandSparkles aria-hidden className="h-4 w-4" />
                 </span>
-                <h2 className="font-semibold text-stone-950">{t('analyze.promptHeading')}</h2>
+                <h2 className="min-w-0 text-lg leading-tight font-bold text-stone-950">
+                  {t('analyze.promptHeading')}
+                </h2>
               </div>
               {!prompt && (
                 <div className="space-y-3">
@@ -208,7 +217,7 @@ export default function AnalyzeDetailPage({ params }: { params: Promise<{ id: st
               )}
               {prompt && (
                 <div>
-                  <p className="mb-4 max-h-[45vh] overflow-auto rounded-xl bg-[#f2f0eb] p-4 text-sm leading-6 whitespace-pre-wrap text-stone-700">
+                  <p className="mb-4 max-h-[45vh] overflow-auto rounded-xl bg-[#f2f0eb] p-4 text-[15px] leading-7 whitespace-pre-wrap break-words text-stone-700">
                     {prompt}
                   </p>
                   <div className="flex flex-col gap-2 sm:flex-row">

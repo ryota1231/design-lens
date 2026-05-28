@@ -1,4 +1,4 @@
-import { ArrowRight, Camera, Library, Sparkles } from 'lucide-react';
+import { ArrowRight, Camera, Eye, Library, Palette, ScanLine, Sparkles, Type } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { Button } from '@/components/ui/button';
 import { Link } from '@/lib/i18n/routing';
@@ -46,27 +46,66 @@ export default function Home() {
 
         <section
           aria-label="Design Lens preview"
-          className="relative min-h-[26rem] overflow-hidden rounded-[1.5rem] border border-white bg-white shadow-[0_0_1px_rgba(0,0,0,0.14),0_8px_20px_rgba(0,0,0,0.08)]"
+          className="relative min-h-[28rem] overflow-hidden rounded-[1.75rem] border border-white bg-white shadow-[0_0_1px_rgba(0,0,0,0.14),0_16px_32px_rgba(0,0,0,0.08)]"
         >
-          <div className="absolute inset-x-0 top-0 flex items-center justify-between border-b border-stone-100 bg-[#edebe9] px-4 py-3">
-            <span className="text-xs font-semibold text-stone-600">Observation preview</span>
-            <span className="h-2 w-2 rounded-full bg-emerald-500" />
+          <div className="absolute inset-x-0 top-0 flex items-center justify-between border-b border-stone-100 bg-[#f7f7f4] px-5 py-4">
+            <span className="text-xs font-semibold tracking-normal text-stone-600">
+              Observation preview
+            </span>
+            <span className="flex items-center gap-1.5 text-[11px] font-semibold text-[#008f9c]">
+              <span className="h-2 w-2 rounded-full bg-[#10c8d2]" />
+              Live
+            </span>
           </div>
-          <div className="grid min-h-[26rem] place-items-center px-5 pt-14">
-            <div className="relative h-64 w-full max-w-sm overflow-hidden rounded-[1.25rem] bg-stone-950 shadow-inner">
-              <div className="absolute inset-4 rounded-xl border border-white/30" />
-              <div className="absolute inset-x-10 top-10 h-16 rounded-xl bg-amber-300" />
-              <div className="absolute inset-x-14 top-16 h-4 rounded-full bg-stone-950/80" />
-              <div className="absolute bottom-10 left-10 h-16 w-16 rounded-xl bg-rose-500" />
-              <div className="absolute right-10 bottom-10 space-y-2">
-                <div className="h-3 w-28 rounded bg-white" />
-                <div className="h-3 w-20 rounded bg-white/70" />
-                <div className="h-3 w-24 rounded bg-emerald-300" />
+          <div className="flex min-h-[28rem] items-center justify-center px-5 pt-16 pb-6">
+            <div className="relative w-full max-w-sm overflow-hidden rounded-[2rem] border border-stone-100 bg-[#f7fbfb] p-4 shadow-[inset_0_0_0_1px_rgba(255,255,255,0.7)]">
+              <div className="mb-4 flex items-center justify-between">
+                <div>
+                  <p className="text-[11px] font-semibold text-stone-400">Today&apos;s lens</p>
+                  <p className="text-lg leading-tight font-bold text-stone-950">Intent board</p>
+                </div>
+                <span className="grid h-10 w-10 place-items-center rounded-full bg-[#10c8d2] text-white shadow-[0_8px_18px_rgba(16,200,210,0.22)]">
+                  <Eye aria-hidden className="h-5 w-5" />
+                </span>
               </div>
-              <div className="absolute right-4 bottom-4 left-4 flex items-center justify-between rounded-full bg-white/95 px-4 py-3">
-                <span className="text-xs font-semibold text-stone-950">{t('capture')}</span>
-                <ArrowRight aria-hidden className="h-4 w-4 text-stone-950" />
+
+              <div className="rounded-[1.4rem] bg-white p-3 shadow-[0_8px_20px_rgba(15,23,42,0.08)]">
+                <div className="relative mb-3 aspect-[16/10] overflow-hidden rounded-[1rem] bg-[#0e1f2b]">
+                  <div className="absolute inset-x-5 top-5 h-12 rounded-[1rem] bg-[#aeecef]" />
+                  <div className="absolute inset-x-8 top-11 h-2 rounded-full bg-[#0b3d46]" />
+                  <div className="absolute bottom-5 left-5 h-16 w-14 rounded-[1rem] bg-[#ff6f45]" />
+                  <div className="absolute right-5 bottom-7 space-y-2">
+                    <div className="h-2.5 w-24 rounded-full bg-white" />
+                    <div className="h-2.5 w-16 rounded-full bg-white/65" />
+                  </div>
+                </div>
+                <div className="grid grid-cols-3 gap-2">
+                  {[
+                    { icon: ScanLine, label: 'Shape' },
+                    { icon: Palette, label: 'Color' },
+                    { icon: Type, label: 'Type' },
+                  ].map(({ icon: Icon, label }) => (
+                    <div
+                      key={label}
+                      className="flex flex-col items-center gap-1 rounded-2xl bg-[#f2f7f7] px-2 py-3 text-[#0d6f78]"
+                    >
+                      <Icon aria-hidden className="h-4 w-4" />
+                      <span className="text-[11px] font-semibold">{label}</span>
+                    </div>
+                  ))}
+                </div>
               </div>
+
+              <Link
+                href="/capture"
+                className="mt-4 flex items-center justify-between rounded-full bg-[#10c8d2] px-5 py-4 text-sm font-bold text-white shadow-[0_10px_20px_rgba(16,200,210,0.24)] transition-transform active:scale-[0.98]"
+              >
+                <span className="inline-flex items-center gap-2">
+                  <Camera aria-hidden className="h-4 w-4" />
+                  {t('capture')}
+                </span>
+                <ArrowRight aria-hidden className="h-4 w-4" />
+              </Link>
             </div>
           </div>
         </section>
