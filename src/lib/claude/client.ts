@@ -2,7 +2,8 @@ import Anthropic from '@anthropic-ai/sdk';
 import { AnalysisResultSchema, type AnalysisResult, type Category } from '@/types/analysis';
 import { buildAnalyzeSystemPrompt, buildReproductionPromptSystem } from './prompts';
 
-const MODEL = 'claude-sonnet-4-6';
+const PRIMARY_MODEL = 'claude-sonnet-4-6';
+const FALLBACK_MODELS = ['claude-haiku-4-5'] as const;
 const CATEGORY_VALUES = ['sign', 'logo', 'pop', 'signage', 'other'] as const;
 
 function getClient(): Anthropic {
@@ -30,9 +31,8 @@ export async function analyzeImage(args: {
   const systemPrompt = buildAnalyzeSystemPrompt(args.language);
   const base64 = args.imageBase64.replace(/^data:image\/[a-z]+;base64,/, '');
 
-  const response = await client.messages.create({
-    model: MODEL,
-    max_tokens: 2048,
+  const response = await createMessageWithFallback(client, {
+    maxTokens: 2048,
     system: systemPrompt,
     messages: [
       {
@@ -71,9 +71,8 @@ export async function generateReproductionPrompt(args: {
   const client = getClient();
   const systemPrompt = buildReproductionPromptSystem(args.language);
 
-  const response = await client.messages.create({
-    model: MODEL,
-    max_tokens: 1024,
+  const response = await createMessageWithFallback(client, {
+    maxTokens: 1024,
     system: systemPrompt,
     messages: [
       {
@@ -87,6 +86,41 @@ export async function generateReproductionPrompt(args: {
   });
 
   return extractText(response).trim();
+}
+
+async function createMessageWithFallback(
+  client: Anthropic,
+  args: {
+    maxTokens: number;
+    system: string;
+    messages: Anthropic.Messages.MessageParam[];
+  },
+): Promise<Anthropic.Messages.Message> {
+  const models = [PRIMARY_MODEL, ...FALLBACK_MODELS];
+  let lastError: unknown;
+
+  for (const model of models) {
+    try {
+      return await client.messages.create({
+        model,
+        max_tokens: args.maxTokens,
+        system: args.system,
+        messages: args.messages,
+      });
+    } catch (err) {
+      lastError = err;
+      if (!isModelNotFoundError(err)) throw err;
+
+      console.warn('[/api/analyze] Claude model unavailable, trying fallback', { model });
+    }
+  }
+
+  throw lastError;
+}
+
+function isModelNotFoundError(err: unknown): boolean {
+  const message = err instanceof Error ? err.message : String(err);
+  return /404|not_found_error|model:/i.test(message);
 }
 
 function tryParseJsonObject(text: string): Record<string, unknown> {

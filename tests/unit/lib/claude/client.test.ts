@@ -100,6 +100,44 @@ describe('analyzeImage', () => {
     expect(result.fontHints).toEqual(['Helvetica']);
     expect(result.extractedText).toEqual(['SALE']);
   });
+
+  it('should retry with the fallback model when the primary model is unavailable', async () => {
+    mockCreate
+      .mockRejectedValueOnce(new Error('404 {"type":"error","error":{"type":"not_found_error","message":"model: claude-sonnet-4-6"}}'))
+      .mockResolvedValueOnce({
+        content: [
+          {
+            type: 'text',
+            text: JSON.stringify({
+              concept: 'フォールバック解析',
+              typography: '読みやすい文字',
+              fontHints: [],
+              colors: [],
+              composition: '中央配置',
+              target: '一般層',
+              extractedText: [],
+              category: 'other',
+            }),
+          },
+        ],
+      });
+
+    const result = await analyzeImage({
+      imageBase64: 'data:image/jpeg;base64,xxx',
+      mediaType: 'image/jpeg',
+      language: 'ja',
+    });
+
+    expect(result.concept).toBe('フォールバック解析');
+    expect(mockCreate).toHaveBeenNthCalledWith(
+      1,
+      expect.objectContaining({ model: 'claude-sonnet-4-6' }),
+    );
+    expect(mockCreate).toHaveBeenNthCalledWith(
+      2,
+      expect.objectContaining({ model: 'claude-haiku-4-5' }),
+    );
+  });
 });
 
 describe('generateReproductionPrompt', () => {
