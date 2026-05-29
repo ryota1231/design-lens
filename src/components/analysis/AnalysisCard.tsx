@@ -1,6 +1,17 @@
 'use client';
 
-import { LayoutGrid, Palette, Tag, TextQuote, Type, Users } from 'lucide-react';
+import {
+  Eye,
+  LayoutGrid,
+  Lightbulb,
+  Palette,
+  Sparkles,
+  Tag,
+  TextQuote,
+  Type,
+  Users,
+  Wrench,
+} from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import type { ReactNode } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -89,6 +100,52 @@ export function AnalysisCard({ analysis }: Props) {
               <li key={`${text}-${index}`} className="rounded-2xl bg-[#f7f7f4] px-3 py-2">
                 {text}
               </li>
+            ))}
+          </ul>
+        </SectionCard>
+      )}
+
+      {analysis.visualFlow && (
+        <SectionCard icon={<Eye aria-hidden className="h-4 w-4" />} title={t('visualFlow')}>
+          <p>{analysis.visualFlow}</p>
+        </SectionCard>
+      )}
+
+      {analysis.principles.length > 0 && (
+        <SectionCard icon={<Lightbulb aria-hidden className="h-4 w-4" />} title={t('principles')}>
+          <p className="mb-3 text-xs text-stone-500">{t('principlesHint')}</p>
+          <ul className="space-y-2">
+            {analysis.principles.map((principle, index) => (
+              <li key={`${principle.name}-${index}`}>
+                <details className="rounded-2xl bg-[#f7f7f4] px-3 py-2">
+                  <summary className="cursor-pointer font-bold text-stone-800">
+                    {principle.name}
+                  </summary>
+                  <p className="mt-2 text-sm leading-6 break-words text-stone-600">
+                    {principle.description}
+                  </p>
+                </details>
+              </li>
+            ))}
+          </ul>
+        </SectionCard>
+      )}
+
+      {analysis.improvements.length > 0 && (
+        <SectionCard icon={<Wrench aria-hidden className="h-4 w-4" />} title={t('improvements')}>
+          <ul className="list-disc space-y-2 pl-5">
+            {analysis.improvements.map((item, index) => (
+              <li key={`${item}-${index}`}>{item}</li>
+            ))}
+          </ul>
+        </SectionCard>
+      )}
+
+      {analysis.applications.length > 0 && (
+        <SectionCard icon={<Sparkles aria-hidden className="h-4 w-4" />} title={t('applications')}>
+          <ul className="list-disc space-y-2 pl-5">
+            {analysis.applications.map((item, index) => (
+              <li key={`${item}-${index}`}>{item}</li>
             ))}
           </ul>
         </SectionCard>

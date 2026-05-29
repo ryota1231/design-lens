@@ -6,7 +6,8 @@ export function buildAnalyzeSystemPrompt(language: 'ja' | 'en'): string {
 1. すべて「観察と推測」のトーンで述べる（断定せず「〜のように見える」「〜の意図と思われる」）
 2. 専門用語を使うときは必ず日常語と併記する（例: 「ヒゲのない太い文字（極太サンセリフ）」）
 3. 「意図を持つ目」を育てるアプリの一部であることを意識し、なぜそのデザインがこうなっているかを言語化する
-4. 必ず JSON オブジェクトのみを返す。説明文、前置き、Markdown、コードフェンス表記は書かない
+4. principles は専門用語をタグ名(name)にし、その意味を必ず日常語で description に書く。improvements は「〜するとより伝わりやすくなるかもしれません」のように柔らかく述べる
+5. 必ず JSON オブジェクトのみを返す。説明文、前置き、Markdown、コードフェンス表記は書かない
 
 【JSON スキーマ】
 {
@@ -17,7 +18,11 @@ export function buildAnalyzeSystemPrompt(language: 'ja' | 'en'): string {
   "composition": "string - 視線誘導や配置の意図",
   "target": "string - 想定されるターゲット層",
   "extractedText": ["string", ...] - 画像中の主要なテキスト",
-  "category": "sign | logo | pop | signage | other"
+  "category": "sign | logo | pop | signage | other",
+  "visualFlow": "string - 視線がどう動くか（最初に見る所→次→最後）を1〜2文で",
+  "principles": [{ "name": "原則名（例: ジャンプ率）", "description": "日常語での一言解説" }],
+  "improvements": ["string", ...] - もっと良くするなら、の改善案を2〜3個（断定せず柔らかく）",
+  "applications": ["string", ...] - 別の業種・シーンへの応用アイデアを2〜3個"
 }`;
   }
 
@@ -27,7 +32,8 @@ export function buildAnalyzeSystemPrompt(language: 'ja' | 'en'): string {
 1. Use the tone of "observation and inference" throughout (avoid assertions; prefer "it appears to...", "the likely intent is...")
 2. When using technical terms, always pair them with everyday language (e.g., "Bold sans-serif (thick fonts without serifs)")
 3. This app exists to train "an eye that holds intent." Articulate WHY the design looks the way it does.
-4. Return only a JSON object. No prose, no preamble, no Markdown, no code fences.
+4. For principles, put the technical term as the tag (name) and always explain its meaning in plain language in description. For improvements, phrase gently (e.g., "it might read more clearly if...").
+5. Return only a JSON object. No prose, no preamble, no Markdown, no code fences.
 
 [JSON Schema]
 {
@@ -38,7 +44,11 @@ export function buildAnalyzeSystemPrompt(language: 'ja' | 'en'): string {
   "composition": "string - visual flow and layout intent",
   "target": "string - likely target audience",
   "extractedText": ["string", ...] - main text visible in the image",
-  "category": "sign | logo | pop | signage | other"
+  "category": "sign | logo | pop | signage | other",
+  "visualFlow": "string - how the eye moves (first → next → last) in 1-2 sentences",
+  "principles": [{ "name": "principle name (e.g., visual hierarchy)", "description": "plain-language one-liner" }],
+  "improvements": ["string", ...] - 2-3 gentle suggestions for improvement (avoid assertions)",
+  "applications": ["string", ...] - 2-3 ideas for applying this to other industries/scenes"
 }`;
 }
 

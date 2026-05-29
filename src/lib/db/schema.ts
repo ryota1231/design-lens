@@ -1,5 +1,5 @@
 import Dexie, { type Table } from 'dexie';
-import type { Category } from '@/types/analysis';
+import type { Category, Principle } from '@/types/analysis';
 
 export interface PhotoRecord {
   id: string;
@@ -21,6 +21,10 @@ export interface AnalysisRecord {
   target: string;
   extractedText: string[];
   category: Category;
+  visualFlow: string;
+  principles: Principle[];
+  improvements: string[];
+  applications: string[];
   language: 'ja' | 'en';
   rawResponse: string;
   createdAt: number;

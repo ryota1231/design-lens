@@ -19,6 +19,10 @@ const sampleAnalysis: AnalysisResult = {
   target: '通行人',
   extractedText: ['SALE'],
   category: 'pop',
+  visualFlow: '',
+  principles: [],
+  improvements: [],
+  applications: [],
   rawResponse: '{}',
 };
 

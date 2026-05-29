@@ -55,6 +55,11 @@
     "composition": "Composition",
     "target": "Target audience",
     "extractedText": "Text in design",
+    "visualFlow": "Visual flow",
+    "principles": "Design principles",
+    "principlesHint": "Tap to see the explanation",
+    "improvements": "Ideas to improve",
+    "applications": "How to apply it",
     "category": "Category",
     "categories": {
       "sign": "Sign",

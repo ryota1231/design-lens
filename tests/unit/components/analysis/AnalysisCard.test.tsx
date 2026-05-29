@@ -14,6 +14,11 @@ vi.mock('next-intl', () => ({
       'analyze.noteAiInference': '※AIによる観察と推測です。正解ではありません。',
       'analyze.target': '想定ターゲット',
       'analyze.typography': '文字の特徴',
+      'analyze.visualFlow': '視線の流れ',
+      'analyze.principles': 'デザイン原則',
+      'analyze.principlesHint': 'タップで解説を見る',
+      'analyze.improvements': 'もっと良くするなら',
+      'analyze.applications': '応用アイデア',
       'analyze.categories.pop': 'POP',
     };
 
@@ -30,6 +35,10 @@ const analysis: AnalysisResult = {
   target: '通行中の若い買い物客',
   extractedText: ['SPRING SALE'],
   category: 'pop',
+  visualFlow: 'まず中央のロゴ→次に商品名へ視線が動く',
+  principles: [{ name: 'ジャンプ率', description: '文字の大小差で目を引く' }],
+  improvements: ['余白を増やすと上質に見えるかも'],
+  applications: ['書店のフェアPOPにも応用できそう'],
   rawResponse: '{}',
 };
 
@@ -45,5 +54,33 @@ describe('AnalysisCard', () => {
     render(<AnalysisCard analysis={analysis} />);
 
     expect(screen.getByText('※AIによる観察と推測です。正解ではありません。')).toBeInTheDocument();
+  });
+
+  it('shows the new journey fields', () => {
+    render(<AnalysisCard analysis={analysis} />);
+
+    expect(screen.getByText('視線の流れ')).toBeInTheDocument();
+    expect(screen.getByText('まず中央のロゴ→次に商品名へ視線が動く')).toBeInTheDocument();
+    expect(screen.getByText('ジャンプ率')).toBeInTheDocument();
+    expect(screen.getByText('文字の大小差で目を引く')).toBeInTheDocument();
+    expect(screen.getByText('余白を増やすと上質に見えるかも')).toBeInTheDocument();
+    expect(screen.getByText('書店のフェアPOPにも応用できそう')).toBeInTheDocument();
+  });
+
+  it('hides journey sections when their data is empty', () => {
+    const empty: AnalysisResult = {
+      ...analysis,
+      visualFlow: '',
+      principles: [],
+      improvements: [],
+      applications: [],
+    };
+
+    render(<AnalysisCard analysis={empty} />);
+
+    expect(screen.queryByText('視線の流れ')).not.toBeInTheDocument();
+    expect(screen.queryByText('デザイン原則')).not.toBeInTheDocument();
+    expect(screen.queryByText('もっと良くするなら')).not.toBeInTheDocument();
+    expect(screen.queryByText('応用アイデア')).not.toBeInTheDocument();
   });
 });

@@ -189,7 +189,28 @@ function normalizeAnalysisJson(
     target: toText(json.target, fallback.target),
     extractedText: toStringArray(json.extractedText),
     category: normalizeCategory(json.category),
+    visualFlow: toText(json.visualFlow, ''),
+    principles: normalizePrinciples(json.principles),
+    improvements: toStringArray(json.improvements),
+    applications: toStringArray(json.applications),
   };
+}
+
+function normalizePrinciples(value: unknown): AnalysisResult['principles'] {
+  const values = Array.isArray(value) ? value : value ? [value] : [];
+
+  return values.flatMap((item) => {
+    if (isRecord(item)) {
+      const name = toText(item.name, '');
+      if (!name) return [];
+
+      return [{ name, description: toText(item.description, '') }];
+    }
+
+    // Claude が文字列配列で返した場合は name として扱う
+    const name = toText(item, '');
+    return name ? [{ name, description: '' }] : [];
+  });
 }
 
 function normalizeColors(value: unknown, language: 'ja' | 'en'): AnalysisResult['colors'] {

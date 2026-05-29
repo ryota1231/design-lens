@@ -55,6 +55,11 @@
     "composition": "構図",
     "target": "想定ターゲット",
     "extractedText": "デザイン中のテキスト",
+    "visualFlow": "視線の流れ",
+    "principles": "デザイン原則",
+    "principlesHint": "タップで解説を見る",
+    "improvements": "もっと良くするなら",
+    "applications": "応用アイデア",
     "category": "カテゴリ",
     "categories": {
       "sign": "看板",

@@ -36,4 +36,52 @@ describe('AnalysisResultSchema', () => {
     };
     expect(() => AnalysisResultSchema.parse(invalid)).toThrow();
   });
+
+  const baseValid = {
+    concept: '緊急性を煽るセール訴求',
+    typography: '極太サンセリフ（ヒゲのない太い文字）',
+    fontHints: ['Impact'],
+    colors: [{ hex: '#FF0000', role: 'primary' }],
+    composition: '中央配置',
+    target: '通行人',
+    extractedText: ['SALE'],
+    category: 'pop',
+    rawResponse: '{}',
+  };
+
+  it('should accept and retain the new journey fields', () => {
+    const result = AnalysisResultSchema.parse({
+      ...baseValid,
+      visualFlow: 'まず中央の数字→次に商品名へ視線が動く',
+      principles: [{ name: 'ジャンプ率', description: '文字の大小差で目を引く' }],
+      improvements: ['コントラストを上げる'],
+      applications: ['カフェの新メニュー告知'],
+    });
+
+    expect(result.visualFlow).toBe('まず中央の数字→次に商品名へ視線が動く');
+    expect(result.principles[0]).toEqual({
+      name: 'ジャンプ率',
+      description: '文字の大小差で目を引く',
+    });
+    expect(result.improvements).toEqual(['コントラストを上げる']);
+    expect(result.applications).toEqual(['カフェの新メニュー告知']);
+  });
+
+  it('should default the new journey fields when missing (backward compatibility)', () => {
+    const result = AnalysisResultSchema.parse(baseValid);
+
+    expect(result.visualFlow).toBe('');
+    expect(result.principles).toEqual([]);
+    expect(result.improvements).toEqual([]);
+    expect(result.applications).toEqual([]);
+  });
+
+  it('should reject a principle without a name', () => {
+    expect(() =>
+      AnalysisResultSchema.parse({
+        ...baseValid,
+        principles: [{ description: '名前のない原則' }],
+      }),
+    ).toThrow();
+  });
 });

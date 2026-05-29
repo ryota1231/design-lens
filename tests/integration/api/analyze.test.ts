@@ -17,6 +17,10 @@ const validAnalysis: AnalysisResult = {
   target: 'x',
   extractedText: [],
   category: 'pop',
+  visualFlow: '',
+  principles: [],
+  improvements: [],
+  applications: [],
   rawResponse: '{}',
 };
 

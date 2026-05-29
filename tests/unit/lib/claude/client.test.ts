@@ -138,6 +138,45 @@ describe('analyzeImage', () => {
       expect.objectContaining({ model: 'claude-haiku-4-5' }),
     );
   });
+
+  it('should normalize the new journey fields', async () => {
+    mockCreate.mockResolvedValue({
+      content: [
+        {
+          type: 'text',
+          text: JSON.stringify({
+            concept: 'セール訴求',
+            typography: '太い文字',
+            fontHints: [],
+            colors: [],
+            composition: '中央配置',
+            target: '通行人',
+            extractedText: [],
+            category: 'pop',
+            visualFlow: 'まず中央の数字→次に商品名へ視線が動く',
+            principles: [{ name: 'ジャンプ率', description: '文字の大小差で目を引く' }],
+            improvements: 'コントラストを上げる',
+            applications: ['カフェの新メニュー告知', '書店のフェアPOP'],
+          }),
+        },
+      ],
+    });
+
+    const result = await analyzeImage({
+      imageBase64: 'data:image/jpeg;base64,xxx',
+      mediaType: 'image/jpeg',
+      language: 'ja',
+    });
+
+    expect(result.visualFlow).toBe('まず中央の数字→次に商品名へ視線が動く');
+    expect(result.principles[0]).toEqual({
+      name: 'ジャンプ率',
+      description: '文字の大小差で目を引く',
+    });
+    // 文字列で返ってきた improvements が配列に正規化される
+    expect(result.improvements).toEqual(['コントラストを上げる']);
+    expect(result.applications).toEqual(['カフェの新メニュー告知', '書店のフェアPOP']);
+  });
 });
 
 describe('generateReproductionPrompt', () => {
@@ -161,6 +200,10 @@ describe('generateReproductionPrompt', () => {
         target: 'x',
         extractedText: [],
         category: 'pop',
+        visualFlow: '',
+        principles: [],
+        improvements: [],
+        applications: [],
       },
       language: 'ja',
     });
