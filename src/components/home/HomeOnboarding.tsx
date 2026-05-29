@@ -1,6 +1,6 @@
 'use client';
 
-import { ArrowRight, Camera, Library, Palette, ScanText, Sparkles } from 'lucide-react';
+import { Camera, Library, Palette, ScanText, Sparkles } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { useEffect, useMemo, useState } from 'react';
 import { Link } from '@/lib/i18n/routing';
@@ -72,7 +72,7 @@ export function HomeOnboarding() {
       </section>
 
       <div className="home-onboarding-shell mx-auto flex min-h-dvh w-full max-w-md flex-col pb-[calc(9.25rem+env(safe-area-inset-bottom))] lg:max-w-6xl lg:grid lg:grid-cols-[0.9fr_1.1fr] lg:items-center lg:gap-10 lg:px-10 lg:py-10 lg:pb-10">
-        <section className="home-visual-panel relative flex h-[38dvh] min-h-[250px] max-h-[320px] overflow-hidden rounded-b-[2rem] bg-[#0d3028] lg:h-auto lg:min-h-[42rem] lg:max-h-none lg:rounded-[2.4rem]">
+        <section className="home-visual-panel relative flex h-[48dvh] min-h-[330px] max-h-[430px] overflow-hidden rounded-b-[2rem] bg-[#0d3028] lg:h-auto lg:min-h-[42rem] lg:max-h-none lg:rounded-[2.4rem]">
           <SlideVisual key={currentSlide.visual} visual={currentSlide.visual} />
         </section>
 
@@ -139,36 +139,47 @@ function SlideVisual({ visual }: { visual: string }) {
 
 function CityVisual() {
   return (
-    <div className="relative flex min-h-full w-full items-center justify-center overflow-hidden bg-[linear-gradient(180deg,#f8b08c_0%,#f7d7bb_32%,#d7eef1_72%,#f6fffb_100%)] px-7 pt-8 pb-4 lg:items-end lg:pb-8">
-      <div className="absolute inset-x-0 bottom-[30%] h-28 bg-[linear-gradient(180deg,transparent,rgba(10,41,51,0.18))]" />
-      <div className="absolute inset-x-0 bottom-[28%] flex items-end justify-center gap-2 px-5 opacity-90">
-        {[88, 132, 104, 164, 118, 148, 96].map((height, index) => (
+    <div className="relative flex min-h-full w-full items-end justify-center overflow-hidden bg-[linear-gradient(180deg,#f8bd95_0%,#ffe2c6_38%,#dff5f4_100%)] px-6 pb-5 lg:pb-8">
+      <div className="absolute inset-x-0 bottom-0 h-[46%] rounded-t-[2.5rem] bg-[#ecfbf6]" />
+      <div className="absolute inset-x-0 top-10 flex items-end justify-center gap-2 px-6 opacity-80">
+        {[92, 126, 104, 152, 116, 132].map((height, index) => (
           <span
             key={`${height}-${index}`}
-            className="w-10 rounded-t-lg bg-[#213b4c]/80 shadow-[inset_0_10px_0_rgba(255,255,255,0.16)]"
+            className="w-9 rounded-t-xl bg-[#536875]/75 shadow-[inset_0_10px_0_rgba(255,255,255,0.16)]"
             style={{ height }}
           />
         ))}
       </div>
-      <div className="absolute right-7 top-11 hidden rounded-full bg-white/75 px-3 py-2 text-xs font-black text-[#0d3028] shadow-lg lg:block">
-        Live Lens
-      </div>
-      <div className="home-feature-card relative z-10 w-full max-w-[14.45rem] rotate-[-4deg] rounded-[1.55rem] bg-white p-2.5 shadow-[0_20px_46px_rgba(31,41,55,0.18)] lg:max-w-[19rem] lg:rounded-[2rem] lg:p-4">
-        <div className="overflow-hidden rounded-[1.15rem] bg-[#123f36] p-2.5 lg:rounded-[1.45rem] lg:p-4">
-          <div className="rounded-[1rem] bg-[#ffd64f] p-2.5 lg:rounded-2xl lg:p-4">
-            <div className="h-2.5 rounded-full bg-[#4b3f18] lg:h-3" />
-          </div>
-          <div className="mt-5 flex items-end justify-between lg:mt-10">
-            <div className="h-14 w-11 rounded-[1rem] bg-[#ff4f8b] lg:h-20 lg:w-16 lg:rounded-2xl" />
-            <div className="space-y-2.5 lg:space-y-3">
-              <div className="h-2.5 w-20 rounded-full bg-white lg:h-3 lg:w-28" />
-              <div className="h-2.5 w-14 rounded-full bg-white/70 lg:h-3 lg:w-20" />
+      <div className="home-feature-card relative z-10 flex w-full max-w-[20rem] items-end justify-center">
+        <div className="relative mb-9 w-[14rem] rotate-[-2deg] rounded-[1.55rem] bg-white p-3 shadow-[0_20px_46px_rgba(31,41,55,0.16)]">
+          <div className="overflow-hidden rounded-[1.15rem] bg-[#143f35] p-3">
+            <div className="rounded-[1rem] bg-[#ffd757] p-3">
+              <div className="h-2.5 rounded-full bg-[#4b3f18]" />
+            </div>
+            <div className="mt-5 flex items-end justify-between">
+              <div className="h-14 w-11 rounded-[1rem] bg-[#ff4f8b]" />
+              <div className="space-y-2.5">
+                <div className="h-2.5 w-20 rounded-full bg-white" />
+                <div className="h-2.5 w-14 rounded-full bg-white/70" />
+              </div>
             </div>
           </div>
         </div>
-        <div className="mt-2 flex items-center justify-between rounded-full bg-[#f3fbf7] px-3.5 py-2 text-xs font-black text-[#0d3028] lg:mt-3 lg:px-4 lg:py-3 lg:text-sm">
-          <span>Intent</span>
-          <ArrowRight aria-hidden className="h-4 w-4" />
+
+        <div className="absolute bottom-0 left-4 flex items-end">
+          <div className="relative">
+            <div className="mx-auto h-12 w-12 rounded-full bg-[#f5c09b]" />
+            <div className="mx-auto -mt-1 h-20 w-16 rounded-t-[1.7rem] bg-[#006241]" />
+            <div className="absolute top-11 left-10 h-6 w-16 -rotate-12 rounded-full bg-[#006241]" />
+            <div className="absolute top-10 left-[4.7rem] grid h-11 w-[3.25rem] place-items-center rounded-[0.85rem] bg-[#102c2b] text-white shadow-lg">
+              <Camera aria-hidden className="h-5 w-5" strokeWidth={2.4} />
+            </div>
+            <div className="absolute top-[3.25rem] left-[6.8rem] h-5 w-5 rounded-full border-4 border-[#00c875] bg-white" />
+          </div>
+        </div>
+
+        <div className="absolute right-1 bottom-7 rounded-[1.1rem] bg-white/92 px-4 py-3 text-xs font-black text-[#0d3028] shadow-[0_12px_28px_rgba(15,23,42,0.14)]">
+          Design spotting
         </div>
       </div>
     </div>
@@ -177,11 +188,11 @@ function CityVisual() {
 
 function ArchiveVisual() {
   return (
-    <div className="relative flex min-h-full w-full items-center justify-center overflow-hidden bg-[linear-gradient(180deg,#dff8ff_0%,#f7fffb_100%)] px-6 py-8 lg:py-10">
-      <div className="absolute left-6 top-9 rounded-full bg-[#00c875] px-3.5 py-1.5 text-xs font-black text-white shadow-lg lg:left-7 lg:top-12 lg:px-4 lg:py-2 lg:text-sm">
+    <div className="relative flex min-h-full w-full items-center justify-center overflow-hidden bg-[linear-gradient(180deg,#dff8ff_0%,#f7fffb_100%)] px-6 py-6 lg:py-10">
+      <div className="absolute left-6 top-7 z-10 rounded-full bg-[#00c875] px-3.5 py-1.5 text-xs font-black text-white shadow-lg lg:left-7 lg:top-12 lg:px-4 lg:py-2 lg:text-sm">
         Collection
       </div>
-      <div className="home-feature-card grid w-full max-w-[17rem] grid-cols-2 gap-3 lg:max-w-[20rem] lg:gap-4">
+      <div className="home-feature-card grid w-full max-w-[15.6rem] grid-cols-2 gap-2.5 lg:max-w-[20rem] lg:gap-4">
         {[
           ['#2f66d0', '#ffffff', 'Sign'],
           ['#ff6f45', '#ffe5d7', 'POP'],
@@ -191,7 +202,7 @@ function ArchiveVisual() {
           <div
             key={label}
             className={`rounded-[1.35rem] bg-white p-2.5 shadow-[0_18px_36px_rgba(15,23,42,0.11)] lg:rounded-[1.6rem] lg:p-3 ${
-              index % 2 === 0 ? 'translate-y-6' : ''
+              index % 2 === 0 ? 'translate-y-2' : '-translate-y-1'
             }`}
           >
             <div

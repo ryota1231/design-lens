@@ -172,13 +172,13 @@ export default function AnalyzeDetailPage({ params }: { params: Promise<{ id: st
         <div className="grid min-w-0 gap-4 lg:grid-cols-[0.88fr_1.12fr] lg:items-start">
           <aside className="min-w-0 lg:sticky lg:top-6">
             {photoUrl && photo && (
-              <div className="w-full max-w-full overflow-hidden rounded-[1.6rem] border border-white bg-white p-1.5 shadow-[0_0_1px_rgba(0,0,0,0.14),0_10px_24px_rgba(15,23,42,0.10)]">
+              <div className="flex w-full max-w-full justify-center overflow-hidden rounded-[1.6rem] border border-white bg-white p-1.5 shadow-[0_0_1px_rgba(0,0,0,0.14),0_10px_24px_rgba(15,23,42,0.10)]">
                 <Image
                   src={photoUrl}
                   alt="captured"
                   width={1024}
                   height={768}
-                  className="block aspect-[4/3] max-h-[34vh] w-full max-w-full rounded-[1.25rem] object-cover lg:max-h-[70vh] lg:object-contain"
+                  className="block h-auto max-h-[42vh] w-auto max-w-full rounded-[1.25rem] object-contain lg:max-h-[70vh]"
                   unoptimized
                 />
               </div>
