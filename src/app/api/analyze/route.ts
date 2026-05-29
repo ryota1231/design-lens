@@ -5,7 +5,8 @@ import { analyzeRateLimiter } from '@/lib/rate-limit/memory-store';
 import { AnalyzeRequestSchema } from '@/types/analysis';
 
 export const runtime = 'nodejs';
-export const maxDuration = 30;
+// Vercel Hobby プランの上限（60秒）まで延長。複雑な画像の解析がタイムアウト(504)するのを防ぐ。
+export const maxDuration = 60;
 
 function getClientKey(req: Request): string {
   const fwd = req.headers.get('x-forwarded-for');

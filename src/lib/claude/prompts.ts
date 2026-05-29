@@ -7,7 +7,8 @@ export function buildAnalyzeSystemPrompt(language: 'ja' | 'en'): string {
 2. 専門用語を使うときは必ず日常語と併記する（例: 「ヒゲのない太い文字（極太サンセリフ）」）
 3. 「意図を持つ目」を育てるアプリの一部であることを意識し、なぜそのデザインがこうなっているかを言語化する
 4. principles は専門用語をタグ名(name)にし、その意味を必ず日常語で description に書く。improvements は「〜するとより伝わりやすくなるかもしれません」のように柔らかく述べる
-5. 必ず JSON オブジェクトのみを返す。説明文、前置き、Markdown、コードフェンス表記は書かない
+5. 各項目は簡潔にする（冗長な説明を避ける）。principles は最大3つ、improvements と applications は各2つまで。出力JSONは必ず最後まで完結させる
+6. 必ず JSON オブジェクトのみを返す。説明文、前置き、Markdown、コードフェンス表記は書かない
 
 【JSON スキーマ】
 {
@@ -21,8 +22,8 @@ export function buildAnalyzeSystemPrompt(language: 'ja' | 'en'): string {
   "category": "sign | logo | pop | signage | other",
   "visualFlow": "string - 視線がどう動くか（最初に見る所→次→最後）を1〜2文で",
   "principles": [{ "name": "原則名（例: ジャンプ率）", "description": "日常語での一言解説" }],
-  "improvements": ["string", ...] - もっと良くするなら、の改善案を2〜3個（断定せず柔らかく）",
-  "applications": ["string", ...] - 別の業種・シーンへの応用アイデアを2〜3個"
+  "improvements": ["string", ...] - もっと良くするなら、の改善案を最大2個（断定せず柔らかく）",
+  "applications": ["string", ...] - 別の業種・シーンへの応用アイデアを最大2個"
 }`;
   }
 
@@ -33,7 +34,8 @@ export function buildAnalyzeSystemPrompt(language: 'ja' | 'en'): string {
 2. When using technical terms, always pair them with everyday language (e.g., "Bold sans-serif (thick fonts without serifs)")
 3. This app exists to train "an eye that holds intent." Articulate WHY the design looks the way it does.
 4. For principles, put the technical term as the tag (name) and always explain its meaning in plain language in description. For improvements, phrase gently (e.g., "it might read more clearly if...").
-5. Return only a JSON object. No prose, no preamble, no Markdown, no code fences.
+5. Keep every field concise (avoid verbosity): at most 3 principles, and at most 2 improvements and 2 applications. Always complete the JSON output to the end.
+6. Return only a JSON object. No prose, no preamble, no Markdown, no code fences.
 
 [JSON Schema]
 {
@@ -47,8 +49,8 @@ export function buildAnalyzeSystemPrompt(language: 'ja' | 'en'): string {
   "category": "sign | logo | pop | signage | other",
   "visualFlow": "string - how the eye moves (first → next → last) in 1-2 sentences",
   "principles": [{ "name": "principle name (e.g., visual hierarchy)", "description": "plain-language one-liner" }],
-  "improvements": ["string", ...] - 2-3 gentle suggestions for improvement (avoid assertions)",
-  "applications": ["string", ...] - 2-3 ideas for applying this to other industries/scenes"
+  "improvements": ["string", ...] - up to 2 gentle suggestions for improvement (avoid assertions)",
+  "applications": ["string", ...] - up to 2 ideas for applying this to other industries/scenes"
 }`;
 }
 

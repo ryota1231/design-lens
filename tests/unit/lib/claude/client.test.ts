@@ -48,7 +48,7 @@ describe('analyzeImage', () => {
     expect(result.colors[0].hex).toBe('#FF0000');
     expect(mockCreate).toHaveBeenCalledOnce();
     expect(mockCreate).toHaveBeenCalledWith(
-      expect.objectContaining({ model: 'claude-sonnet-4-6' }),
+      expect.objectContaining({ max_tokens: 2048, model: 'claude-sonnet-4-6' }),
     );
   });
 

@@ -32,6 +32,7 @@ export async function analyzeImage(args: {
   const base64 = args.imageBase64.replace(/^data:image\/[a-z]+;base64,/, '');
 
   const response = await createMessageWithFallback(client, {
+    // 解析項目が増えたため、JSON が途中で切れないよう少し余裕を持たせる。
     maxTokens: 2048,
     system: systemPrompt,
     messages: [

@@ -28,7 +28,7 @@ export default function CapturePage() {
     setErrorMsg(null);
 
     try {
-      const compressed = await compressImage({ source: blob, maxLongSide: 896, quality: 0.82 });
+      const compressed = await compressImage({ source: blob, maxLongSide: 768, quality: 0.78 });
       const thumb = await compressImage({ source: blob, maxLongSide: 256, quality: 0.8 });
       const dataUrl = await blobToDataUrl(compressed);
 

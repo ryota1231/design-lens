@@ -89,6 +89,7 @@
     "rateLimited": "Too many requests in a short time. Please wait a bit.",
     "promptFailed": "Prompt generation failed. Please try again later.",
     "saveFailed": "Analysis completed, but saving to this device failed. Please reload the browser and try again.",
-    "loadFailed": "Failed to load."
+    "loadFailed": "Failed to load.",
+    "timeout": "Analysis took too long. Please try again, or move a bit closer to the subject."
   }
 }
