@@ -33,6 +33,38 @@ a {
   animation: lens-onboarding-ready 560ms cubic-bezier(0.16, 1, 0.3, 1) 1600ms forwards;
 }
 
+.lens-soft-mark {
+  position: relative;
+  overflow: hidden;
+  animation: lens-soft-breathe 2600ms ease-in-out infinite;
+}
+
+.lens-soft-mark::before {
+  position: absolute;
+  inset: 12px;
+  content: '';
+  border-radius: 1.65rem;
+  background:
+    radial-gradient(circle at 70% 28%, rgb(255 255 255 / 0.82), transparent 16%),
+    linear-gradient(135deg, rgb(255 255 255 / 0.62), transparent 44%);
+  transform: translateX(-22%);
+  animation: lens-soft-sheen 2800ms ease-in-out infinite;
+}
+
+.lens-soft-mark > svg,
+.lens-soft-mark > span {
+  position: relative;
+  z-index: 1;
+}
+
+.lens-soft-mark-sparkle {
+  animation: lens-sparkle-drift 2200ms ease-in-out infinite;
+}
+
+.home-feature-card {
+  animation: lens-card-pop 640ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
 @keyframes lens-splash-cover {
   0%,
   72% {
@@ -42,6 +74,40 @@ a {
   100% {
     opacity: 0;
     visibility: hidden;
+  }
+}
+
+@keyframes lens-soft-breathe {
+  0%,
+  100% {
+    transform: translateY(0) scale(1);
+  }
+  50% {
+    transform: translateY(-5px) scale(1.025);
+  }
+}
+
+@keyframes lens-soft-sheen {
+  0%,
+  100% {
+    opacity: 0.7;
+    transform: translateX(-26%) rotate(-8deg);
+  }
+  50% {
+    opacity: 1;
+    transform: translateX(18%) rotate(-8deg);
+  }
+}
+
+@keyframes lens-sparkle-drift {
+  0%,
+  100% {
+    opacity: 0.72;
+    transform: translateY(0) scale(0.92) rotate(0deg);
+  }
+  50% {
+    opacity: 1;
+    transform: translateY(-5px) scale(1.08) rotate(9deg);
   }
 }
 
@@ -77,6 +143,17 @@ a {
   }
 }
 
+@keyframes lens-card-pop {
+  0% {
+    transform: translateY(16px) scale(0.97) rotate(-2deg);
+    opacity: 0;
+  }
+  100% {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+  }
+}
+
 @keyframes lens-slide-up {
   0% {
     transform: translateY(14px);
@@ -85,6 +162,29 @@ a {
   100% {
     transform: translateY(0);
     opacity: 1;
+  }
+}
+
+@media (max-width: 767px) and (max-height: 720px) {
+  .home-visual-panel {
+    height: 34dvh;
+    min-height: 210px;
+    max-height: 245px;
+  }
+
+  .home-copy-title {
+    font-size: 1.55rem;
+    line-height: 1.14;
+  }
+
+  .home-copy-body {
+    margin-top: 0.55rem;
+    font-size: 0.875rem;
+    line-height: 1.58;
+  }
+
+  .home-slide-dots {
+    margin-top: 0.9rem;
   }
 }
 
