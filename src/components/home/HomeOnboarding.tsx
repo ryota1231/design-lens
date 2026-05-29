@@ -2,14 +2,15 @@
 
 import { Camera, Library, Palette, ScanText, Sparkles } from 'lucide-react';
 import { useTranslations } from 'next-intl';
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo, useRef, useState, type TouchEvent } from 'react';
 import { Link } from '@/lib/i18n/routing';
 
-const SLIDE_DURATION_MS = 4600;
+const SWIPE_THRESHOLD_PX = 44;
 
 export function HomeOnboarding() {
   const t = useTranslations('home');
   const [slideIndex, setSlideIndex] = useState(0);
+  const touchStartX = useRef<number | null>(null);
 
   const slides = useMemo(
     () => [
@@ -35,15 +36,28 @@ export function HomeOnboarding() {
     [t],
   );
 
-  useEffect(() => {
-    const timer = window.setInterval(() => {
-      setSlideIndex((current) => (current + 1) % slides.length);
-    }, SLIDE_DURATION_MS);
-
-    return () => window.clearInterval(timer);
-  }, [slides.length]);
-
   const currentSlide = slides[slideIndex];
+
+  function goToSlide(nextIndex: number) {
+    setSlideIndex((nextIndex + slides.length) % slides.length);
+  }
+
+  function handleTouchStart(event: TouchEvent<HTMLDivElement>) {
+    touchStartX.current = event.touches[0]?.clientX ?? null;
+  }
+
+  function handleTouchEnd(event: TouchEvent<HTMLDivElement>) {
+    if (touchStartX.current === null) return;
+
+    const endX = event.changedTouches[0]?.clientX;
+    if (endX === undefined) return;
+
+    const deltaX = endX - touchStartX.current;
+    touchStartX.current = null;
+
+    if (Math.abs(deltaX) < SWIPE_THRESHOLD_PX) return;
+    goToSlide(slideIndex + (deltaX < 0 ? 1 : -1));
+  }
 
   return (
     <main className="min-h-dvh overflow-x-hidden bg-[#f4fbf8] text-stone-950">
@@ -71,8 +85,12 @@ export function HomeOnboarding() {
         </div>
       </section>
 
-      <div className="home-onboarding-shell mx-auto flex min-h-dvh w-full max-w-md flex-col pb-[calc(9.25rem+env(safe-area-inset-bottom))] lg:max-w-6xl lg:grid lg:grid-cols-[0.9fr_1.1fr] lg:items-center lg:gap-10 lg:px-10 lg:py-10 lg:pb-10">
-        <section className="home-visual-panel relative flex h-[48dvh] min-h-[330px] max-h-[430px] overflow-hidden rounded-b-[2rem] bg-[#0d3028] lg:h-auto lg:min-h-[42rem] lg:max-h-none lg:rounded-[2.4rem]">
+      <div
+        className="home-onboarding-shell mx-auto flex min-h-dvh w-full max-w-md flex-col pb-[calc(9.25rem+env(safe-area-inset-bottom))] lg:max-w-6xl lg:grid lg:grid-cols-[0.9fr_1.1fr] lg:items-center lg:gap-10 lg:px-10 lg:py-10 lg:pb-10"
+        onTouchStart={handleTouchStart}
+        onTouchEnd={handleTouchEnd}
+      >
+        <section className="home-visual-panel relative flex h-[54dvh] min-h-[380px] max-h-[500px] overflow-hidden rounded-b-[2rem] bg-[#0d3028] lg:h-auto lg:min-h-[42rem] lg:max-h-none lg:rounded-[2.4rem]">
           <SlideVisual key={currentSlide.visual} visual={currentSlide.visual} />
         </section>
 
@@ -103,7 +121,7 @@ export function HomeOnboarding() {
                   className={`h-3 rounded-full transition-all ${
                     slideIndex === index ? 'w-9 bg-[#00c875]' : 'w-3 bg-[#9ce7c8]'
                   }`}
-                  onClick={() => setSlideIndex(index)}
+                  onClick={() => goToSlide(index)}
                 />
               ))}
             </div>
@@ -188,11 +206,11 @@ function CityVisual() {
 
 function ArchiveVisual() {
   return (
-    <div className="relative flex min-h-full w-full items-center justify-center overflow-hidden bg-[linear-gradient(180deg,#dff8ff_0%,#f7fffb_100%)] px-6 py-6 lg:py-10">
+    <div className="relative flex min-h-full w-full items-center justify-center overflow-hidden bg-[linear-gradient(180deg,#dff8ff_0%,#f7fffb_100%)] px-6 py-8 lg:py-10">
       <div className="absolute left-6 top-7 z-10 rounded-full bg-[#00c875] px-3.5 py-1.5 text-xs font-black text-white shadow-lg lg:left-7 lg:top-12 lg:px-4 lg:py-2 lg:text-sm">
         Collection
       </div>
-      <div className="home-feature-card grid w-full max-w-[15.6rem] grid-cols-2 gap-2.5 lg:max-w-[20rem] lg:gap-4">
+      <div className="home-feature-card grid w-full max-w-[17rem] grid-cols-2 gap-3 lg:max-w-[20rem] lg:gap-4">
         {[
           ['#2f66d0', '#ffffff', 'Sign'],
           ['#ff6f45', '#ffe5d7', 'POP'],
@@ -202,7 +220,7 @@ function ArchiveVisual() {
           <div
             key={label}
             className={`rounded-[1.35rem] bg-white p-2.5 shadow-[0_18px_36px_rgba(15,23,42,0.11)] lg:rounded-[1.6rem] lg:p-3 ${
-              index % 2 === 0 ? 'translate-y-2' : '-translate-y-1'
+              index % 2 === 0 ? 'translate-y-1' : ''
             }`}
           >
             <div
@@ -224,8 +242,8 @@ function ArchiveVisual() {
 
 function PromptVisual() {
   return (
-    <div className="relative flex min-h-full w-full items-center justify-center overflow-hidden bg-[linear-gradient(180deg,#fff5d8_0%,#f7fffb_100%)] px-7 py-8 lg:py-10">
-      <div className="home-feature-card w-full max-w-[17.5rem] rounded-[1.75rem] bg-white p-4 shadow-[0_26px_60px_rgba(15,23,42,0.14)] lg:max-w-[20rem] lg:rounded-[2rem] lg:p-5">
+    <div className="relative flex min-h-full w-full items-center justify-center overflow-hidden bg-[linear-gradient(180deg,#fff5d8_0%,#f7fffb_100%)] px-7 py-9 lg:py-10">
+      <div className="home-feature-card w-full max-w-[18.5rem] rounded-[1.75rem] bg-white p-4 shadow-[0_26px_60px_rgba(15,23,42,0.14)] lg:max-w-[20rem] lg:rounded-[2rem] lg:p-5">
         <div className="mb-4 flex items-center gap-3 lg:mb-5">
           <span className="grid h-11 w-11 place-items-center rounded-[1.1rem] bg-[#123f36] text-white lg:h-12 lg:w-12 lg:rounded-2xl">
             <ScanText aria-hidden className="h-5 w-5 lg:h-6 lg:w-6" />
