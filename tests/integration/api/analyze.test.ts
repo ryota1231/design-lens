@@ -21,6 +21,7 @@ const validAnalysis: AnalysisResult = {
   principles: [],
   improvements: [],
   applications: [],
+  textStyles: [],
   rawResponse: '{}',
 };
 

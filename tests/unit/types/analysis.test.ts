@@ -56,6 +56,13 @@ describe('AnalysisResultSchema', () => {
       principles: [{ name: 'ジャンプ率', description: '文字の大小差で目を引く' }],
       improvements: ['コントラストを上げる'],
       applications: ['カフェの新メニュー告知'],
+      textStyles: [
+        {
+          text: 'SALE',
+          fontType: '極太サンセリフ',
+          characteristics: '遠くからでも読める太い文字',
+        },
+      ],
     });
 
     expect(result.visualFlow).toBe('まず中央の数字→次に商品名へ視線が動く');
@@ -65,6 +72,11 @@ describe('AnalysisResultSchema', () => {
     });
     expect(result.improvements).toEqual(['コントラストを上げる']);
     expect(result.applications).toEqual(['カフェの新メニュー告知']);
+    expect(result.textStyles[0]).toEqual({
+      text: 'SALE',
+      fontType: '極太サンセリフ',
+      characteristics: '遠くからでも読める太い文字',
+    });
   });
 
   it('should default the new journey fields when missing (backward compatibility)', () => {
@@ -74,6 +86,7 @@ describe('AnalysisResultSchema', () => {
     expect(result.principles).toEqual([]);
     expect(result.improvements).toEqual([]);
     expect(result.applications).toEqual([]);
+    expect(result.textStyles).toEqual([]);
   });
 
   it('should reject a principle without a name', () => {

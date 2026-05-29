@@ -12,6 +12,12 @@ export const PrincipleSchema = z.object({
   description: z.string(),
 });
 
+export const TextStyleSchema = z.object({
+  text: z.string(),
+  fontType: z.string(),
+  characteristics: z.string(),
+});
+
 export const AnalysisResultSchema = z.object({
   concept: z.string().min(1),
   typography: z.string().min(1),
@@ -26,6 +32,7 @@ export const AnalysisResultSchema = z.object({
   principles: z.array(PrincipleSchema).default([]),
   improvements: z.array(z.string()).default([]),
   applications: z.array(z.string()).default([]),
+  textStyles: z.array(TextStyleSchema).default([]),
   rawResponse: z.string(),
 });
 
@@ -46,6 +53,7 @@ export const PromptResponseSchema = z.object({
 export type Color = z.infer<typeof ColorSchema>;
 export type Category = z.infer<typeof CategorySchema>;
 export type Principle = z.infer<typeof PrincipleSchema>;
+export type TextStyle = z.infer<typeof TextStyleSchema>;
 export type AnalysisResult = z.infer<typeof AnalysisResultSchema>;
 export type AnalyzeRequest = z.infer<typeof AnalyzeRequestSchema>;
 export type PromptRequest = z.infer<typeof PromptRequestSchema>;

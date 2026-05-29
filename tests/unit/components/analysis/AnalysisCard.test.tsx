@@ -17,6 +17,10 @@ vi.mock('next-intl', () => ({
       'analyze.visualFlow': '視線の流れ',
       'analyze.principles': 'デザイン原則',
       'analyze.principlesHint': 'タップで解説を見る',
+      'analyze.colorDetails': '色の役割',
+      'analyze.fontType': '推定フォント',
+      'analyze.fontCharacteristics': '特徴',
+      'analyze.fontHints': '候補',
       'analyze.improvements': 'もっと良くするなら',
       'analyze.applications': '応用アイデア',
       'analyze.categories.pop': 'POP',
@@ -39,6 +43,13 @@ const analysis: AnalysisResult = {
   principles: [{ name: 'ジャンプ率', description: '文字の大小差で目を引く' }],
   improvements: ['余白を増やすと上質に見えるかも'],
   applications: ['書店のフェアPOPにも応用できそう'],
+  textStyles: [
+    {
+      text: 'SPRING SALE',
+      fontType: '極太サンセリフ',
+      characteristics: '遠くからでも読める力強い形',
+    },
+  ],
   rawResponse: '{}',
 };
 
@@ -65,6 +76,17 @@ describe('AnalysisCard', () => {
     expect(screen.getByText('文字の大小差で目を引く')).toBeInTheDocument();
     expect(screen.getByText('余白を増やすと上質に見えるかも')).toBeInTheDocument();
     expect(screen.getByText('書店のフェアPOPにも応用できそう')).toBeInTheDocument();
+  });
+
+  it('shows colors as compact swatches and hides raw text/composition sections', () => {
+    render(<AnalysisCard analysis={analysis} />);
+
+    expect(screen.getAllByText('#ff3366').length).toBeGreaterThan(0);
+    expect(screen.getByText('SPRING SALE')).toBeInTheDocument();
+    expect(screen.getByText('極太サンセリフ')).toBeInTheDocument();
+    expect(screen.getByText('遠くからでも読める力強い形')).toBeInTheDocument();
+    expect(screen.queryByText('構図')).not.toBeInTheDocument();
+    expect(screen.queryByText('デザイン中のテキスト')).not.toBeInTheDocument();
   });
 
   it('hides journey sections when their data is empty', () => {

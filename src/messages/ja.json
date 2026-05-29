@@ -23,7 +23,7 @@
       "slide1": {
         "label": "まずは撮るだけ",
         "title": "撮るだけで、意図が見える",
-        "body": "看板・POP・ロゴを撮影すると、AIが配色や文字、構図の狙いを日本語で整理します。"
+        "body": "看板・POP・ロゴを撮影すると、AIが配色や文字、視線の流れを日本語で整理します。"
       },
       "slide2": {
         "label": "気づきを残す",
@@ -58,6 +58,10 @@
     "visualFlow": "視線の流れ",
     "principles": "デザイン原則",
     "principlesHint": "タップで解説を見る",
+    "colorDetails": "色の役割",
+    "fontType": "推定フォント",
+    "fontCharacteristics": "特徴",
+    "fontHints": "候補",
     "improvements": "もっと良くするなら",
     "applications": "応用アイデア",
     "category": "カテゴリ",

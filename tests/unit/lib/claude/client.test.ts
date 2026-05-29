@@ -157,6 +157,13 @@ describe('analyzeImage', () => {
             principles: [{ name: 'ジャンプ率', description: '文字の大小差で目を引く' }],
             improvements: 'コントラストを上げる',
             applications: ['カフェの新メニュー告知', '書店のフェアPOP'],
+            textStyles: [
+              {
+                text: 'SALE',
+                fontType: '極太サンセリフ',
+                characteristics: '遠くからでも読める太い文字',
+              },
+            ],
           }),
         },
       ],
@@ -176,6 +183,11 @@ describe('analyzeImage', () => {
     // 文字列で返ってきた improvements が配列に正規化される
     expect(result.improvements).toEqual(['コントラストを上げる']);
     expect(result.applications).toEqual(['カフェの新メニュー告知', '書店のフェアPOP']);
+    expect(result.textStyles[0]).toEqual({
+      text: 'SALE',
+      fontType: '極太サンセリフ',
+      characteristics: '遠くからでも読める太い文字',
+    });
   });
 });
 
@@ -204,6 +216,7 @@ describe('generateReproductionPrompt', () => {
         principles: [],
         improvements: [],
         applications: [],
+        textStyles: [],
       },
       language: 'ja',
     });

@@ -194,7 +194,49 @@ function normalizeAnalysisJson(
     principles: normalizePrinciples(json.principles),
     improvements: toStringArray(json.improvements),
     applications: toStringArray(json.applications),
+    textStyles: normalizeTextStyles(json.textStyles, {
+      extractedText: json.extractedText,
+      fontHints: json.fontHints,
+      typography: json.typography,
+    }),
   };
+}
+
+function normalizeTextStyles(
+  value: unknown,
+  fallback: { extractedText: unknown; fontHints: unknown; typography: unknown },
+): AnalysisResult['textStyles'] {
+  const values = Array.isArray(value) ? value : value ? [value] : [];
+  const normalized = values.flatMap((item) => {
+    if (!isRecord(item)) return [];
+
+    const text = toText(item.text, '');
+    const fontType = toText(item.fontType, '');
+    const characteristics = toText(item.characteristics, '');
+    if (!text && !fontType && !characteristics) return [];
+
+    return [
+      {
+        text: text || '読み取れた文字',
+        fontType: fontType || '推定できる範囲での書体',
+        characteristics: characteristics || '文字の印象は画像全体の特徴から推測しています。',
+      },
+    ];
+  });
+
+  if (normalized.length > 0) return normalized;
+
+  const extractedText = toStringArray(fallback.extractedText);
+  const fontHints = toStringArray(fallback.fontHints);
+  const typography = toText(fallback.typography, '');
+  if (extractedText.length === 0 || !typography) return [];
+
+  const fontType = fontHints[0] ?? '推定できる範囲での書体';
+  return extractedText.slice(0, 4).map((text) => ({
+    text,
+    fontType,
+    characteristics: typography,
+  }));
 }
 
 function normalizePrinciples(value: unknown): AnalysisResult['principles'] {

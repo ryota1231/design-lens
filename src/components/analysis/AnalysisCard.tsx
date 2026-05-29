@@ -1,13 +1,12 @@
 'use client';
 
 import {
+  CheckCircle2,
   Eye,
-  LayoutGrid,
   Lightbulb,
   Palette,
   Sparkles,
   Tag,
-  TextQuote,
   Type,
   Users,
   Wrench,
@@ -19,7 +18,10 @@ import type { AnalysisResult } from '@/types/analysis';
 import { ColorPalette } from './ColorPalette';
 
 interface Props {
-  analysis: Omit<AnalysisResult, 'rawResponse'> & { rawResponse?: string };
+  analysis: Omit<AnalysisResult, 'rawResponse' | 'textStyles'> & {
+    rawResponse?: string;
+    textStyles?: AnalysisResult['textStyles'];
+  };
 }
 
 function SectionCard({
@@ -50,6 +52,8 @@ function SectionCard({
 
 export function AnalysisCard({ analysis }: Props) {
   const t = useTranslations('analyze');
+  const conceptItems = splitSentences(analysis.concept);
+  const textStyles = analysis.textStyles ?? [];
 
   return (
     <div className="min-w-0 space-y-4">
@@ -63,9 +67,19 @@ export function AnalysisCard({ analysis }: Props) {
           </div>
         </CardHeader>
         <CardContent className="min-w-0 p-5 pt-0">
-          <p className="text-[17px] leading-8 font-bold break-words text-white sm:text-xl sm:leading-9">
-            {analysis.concept}
-          </p>
+          <ul className="space-y-3">
+            {conceptItems.map((item, index) => (
+              <li key={`${item}-${index}`} className="flex min-w-0 gap-3">
+                <CheckCircle2
+                  aria-hidden
+                  className="mt-1 h-5 w-5 shrink-0 text-[#8ee5bd]"
+                />
+                <span className="text-[17px] leading-8 font-bold break-words text-white sm:text-xl sm:leading-9">
+                  {item}
+                </span>
+              </li>
+            ))}
+          </ul>
         </CardContent>
       </Card>
 
@@ -74,40 +88,64 @@ export function AnalysisCard({ analysis }: Props) {
       </SectionCard>
 
       <SectionCard icon={<Type aria-hidden className="h-4 w-4" />} title={t('typography')}>
-        <p>{analysis.typography}</p>
-        {analysis.fontHints.length > 0 && (
-          <p className="mt-4 rounded-2xl bg-[#f7f7f4] p-3 text-sm leading-6 break-words text-stone-600">
-            {analysis.fontHints.join(' / ')}
-          </p>
-        )}
-      </SectionCard>
-
-      <SectionCard icon={<LayoutGrid aria-hidden className="h-4 w-4" />} title={t('composition')}>
-        <p>{analysis.composition}</p>
-      </SectionCard>
-
-      <SectionCard icon={<Users aria-hidden className="h-4 w-4" />} title={t('target')}>
-        <p>{analysis.target}</p>
-      </SectionCard>
-
-      {analysis.extractedText.length > 0 && (
-        <SectionCard
-          icon={<TextQuote aria-hidden className="h-4 w-4" />}
-          title={t('extractedText')}
-        >
-          <ul className="space-y-2">
-            {analysis.extractedText.map((text, index) => (
-              <li key={`${text}-${index}`} className="rounded-2xl bg-[#f7f7f4] px-3 py-2">
-                {text}
+        {textStyles.length > 0 ? (
+          <ul className="space-y-3">
+            {textStyles.map((style, index) => (
+              <li
+                key={`${style.text}-${index}`}
+                className="rounded-[1.25rem] border border-[#dff6f5] bg-[#fbfefd] p-3"
+              >
+                <p className="mb-3 inline-flex max-w-full rounded-full bg-[#dff6f5] px-3 py-1 text-sm font-bold break-words text-[#06727b]">
+                  {style.text}
+                </p>
+                <dl className="space-y-2">
+                  <div>
+                    <dt className="text-xs font-bold tracking-[0.08em] text-stone-500 uppercase">
+                      {t('fontType')}
+                    </dt>
+                    <dd className="mt-1 font-bold break-words text-stone-900">
+                      {style.fontType}
+                    </dd>
+                  </div>
+                  <div>
+                    <dt className="text-xs font-bold tracking-[0.08em] text-stone-500 uppercase">
+                      {t('fontCharacteristics')}
+                    </dt>
+                    <dd className="mt-1 leading-7 break-words text-stone-700">
+                      {style.characteristics}
+                    </dd>
+                  </div>
+                </dl>
               </li>
             ))}
           </ul>
-        </SectionCard>
-      )}
+        ) : (
+          <InsightList items={splitSentences(analysis.typography)} tone="mint" />
+        )}
+        {analysis.fontHints.length > 0 && (
+          <div className="mt-4 rounded-2xl bg-[#f7f7f4] p-3">
+            <p className="mb-2 text-xs font-bold text-stone-500">{t('fontHints')}</p>
+            <div className="flex flex-wrap gap-2">
+              {analysis.fontHints.map((hint, index) => (
+                <span
+                  key={`${hint}-${index}`}
+                  className="rounded-full bg-white px-3 py-1.5 text-xs font-bold break-words text-stone-700 shadow-sm"
+                >
+                  {hint}
+                </span>
+              ))}
+            </div>
+          </div>
+        )}
+      </SectionCard>
+
+      <SectionCard icon={<Users aria-hidden className="h-4 w-4" />} title={t('target')}>
+        <InsightList items={splitSentences(analysis.target)} tone="gold" />
+      </SectionCard>
 
       {analysis.visualFlow && (
         <SectionCard icon={<Eye aria-hidden className="h-4 w-4" />} title={t('visualFlow')}>
-          <p>{analysis.visualFlow}</p>
+          <InsightList items={splitSentences(analysis.visualFlow)} tone="mint" />
         </SectionCard>
       )}
 
@@ -133,21 +171,13 @@ export function AnalysisCard({ analysis }: Props) {
 
       {analysis.improvements.length > 0 && (
         <SectionCard icon={<Wrench aria-hidden className="h-4 w-4" />} title={t('improvements')}>
-          <ul className="list-disc space-y-2 pl-5">
-            {analysis.improvements.map((item, index) => (
-              <li key={`${item}-${index}`}>{item}</li>
-            ))}
-          </ul>
+          <InsightList items={analysis.improvements} tone="gold" />
         </SectionCard>
       )}
 
       {analysis.applications.length > 0 && (
         <SectionCard icon={<Sparkles aria-hidden className="h-4 w-4" />} title={t('applications')}>
-          <ul className="list-disc space-y-2 pl-5">
-            {analysis.applications.map((item, index) => (
-              <li key={`${item}-${index}`}>{item}</li>
-            ))}
-          </ul>
+          <InsightList items={analysis.applications} tone="mint" />
         </SectionCard>
       )}
 
@@ -156,4 +186,37 @@ export function AnalysisCard({ analysis }: Props) {
       </p>
     </div>
   );
+}
+
+function InsightList({ items, tone }: { items: string[]; tone: 'mint' | 'gold' }) {
+  const colors =
+    tone === 'mint'
+      ? { dot: 'bg-[#00a862]', surface: 'bg-[#f0fbf6]', border: 'border-[#d4e9e2]' }
+      : { dot: 'bg-[#cba258]', surface: 'bg-[#faf6ee]', border: 'border-[#dfc49d]' };
+
+  return (
+    <ul className="space-y-2">
+      {items.map((item, index) => (
+        <li
+          key={`${item}-${index}`}
+          className={`flex min-w-0 gap-3 rounded-2xl border px-3 py-3 ${colors.surface} ${colors.border}`}
+        >
+          <span className={`mt-2 h-2.5 w-2.5 shrink-0 rounded-full ${colors.dot}`} />
+          <span className="min-w-0 leading-7 break-words">{item}</span>
+        </li>
+      ))}
+    </ul>
+  );
+}
+
+function splitSentences(text: string): string[] {
+  const normalized = text.trim();
+  if (!normalized) return [];
+
+  const sentences = normalized
+    .split(/(?<=[。.!?！？])\s*/)
+    .map((item) => item.trim())
+    .filter(Boolean);
+
+  return sentences.length > 0 ? sentences : [normalized];
 }

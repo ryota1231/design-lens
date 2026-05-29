@@ -23,6 +23,7 @@ const sampleAnalysis: AnalysisResult = {
   principles: [],
   improvements: [],
   applications: [],
+  textStyles: [],
   rawResponse: '{}',
 };
 

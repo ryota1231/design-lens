@@ -23,7 +23,7 @@
       "slide1": {
         "label": "Start with a photo",
         "title": "Capture once. See the intent.",
-        "body": "Photograph a sign, POP, or logo. AI organizes the color, type, and composition choices."
+        "body": "Photograph a sign, POP, or logo. AI organizes the color, type, and visual flow choices."
       },
       "slide2": {
         "label": "Keep discoveries",
@@ -58,6 +58,10 @@
     "visualFlow": "Visual flow",
     "principles": "Design principles",
     "principlesHint": "Tap to see the explanation",
+    "colorDetails": "Color roles",
+    "fontType": "Estimated font",
+    "fontCharacteristics": "Characteristics",
+    "fontHints": "Candidates",
     "improvements": "Ideas to improve",
     "applications": "How to apply it",
     "category": "Category",
