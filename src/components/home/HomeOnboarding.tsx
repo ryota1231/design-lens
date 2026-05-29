@@ -94,7 +94,7 @@ export function HomeOnboarding() {
           <SlideVisual key={currentSlide.visual} visual={currentSlide.visual} />
         </section>
 
-        <section className="flex flex-1 flex-col justify-between px-5 pt-5 lg:px-0 lg:pt-0">
+        <section className="home-copy-panel flex flex-1 flex-col justify-between px-5 pt-5 lg:px-0 lg:pt-0">
           <div
             key={currentSlide.label}
             className="animate-[lens-slide-up_620ms_cubic-bezier(0.16,1,0.3,1)_both]"
@@ -130,14 +130,14 @@ export function HomeOnboarding() {
           <div className="home-action-bar fixed inset-x-0 bottom-0 z-20 mx-auto grid w-full max-w-md gap-2 bg-[#f4fbf8]/95 px-5 pt-3 pb-[calc(0.95rem+env(safe-area-inset-bottom))] shadow-[0_-14px_30px_rgba(15,23,42,0.08)] backdrop-blur lg:static lg:max-w-sm lg:bg-transparent lg:p-0 lg:pt-0 lg:shadow-none lg:backdrop-blur-none">
             <Link
               href="/capture"
-              className="inline-flex min-h-[3.25rem] items-center justify-center gap-3 rounded-full bg-[#00c875] px-6 text-[16px] font-black text-white shadow-[0_14px_30px_rgba(0,200,117,0.24)] transition-transform active:scale-[0.98] lg:min-h-14 lg:text-[17px]"
+              className="home-primary-action inline-flex min-h-[3.25rem] items-center justify-center gap-3 rounded-full bg-[#00c875] px-6 text-[16px] font-black text-white shadow-[0_14px_30px_rgba(0,200,117,0.24)] transition-transform active:scale-[0.98] lg:min-h-14 lg:text-[17px]"
             >
               <Camera aria-hidden className="h-5 w-5" />
               {t('capture')}
             </Link>
             <Link
               href="/archive"
-              className="inline-flex min-h-[3.25rem] items-center justify-center gap-3 rounded-full border border-[#d8e9e2] bg-white px-6 text-[16px] font-black text-[#123f36] shadow-[0_10px_24px_rgba(15,23,42,0.06)] transition-transform active:scale-[0.98] lg:min-h-14 lg:text-[17px]"
+              className="home-secondary-action inline-flex min-h-[3.25rem] items-center justify-center gap-3 rounded-full border border-[#d8e9e2] bg-white px-6 text-[16px] font-black text-[#123f36] shadow-[0_10px_24px_rgba(15,23,42,0.06)] transition-transform active:scale-[0.98] lg:min-h-14 lg:text-[17px]"
             >
               <Library aria-hidden className="h-5 w-5" />
               {t('viewArchive')}

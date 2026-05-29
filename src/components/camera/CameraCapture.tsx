@@ -46,42 +46,52 @@ export function CameraCapture({ onCapture, onCancel }: Props) {
   }
 
   return (
-    <div className="fixed inset-x-0 top-0 z-50 h-[100dvh] overflow-hidden bg-black">
-      <video ref={videoRef} className="absolute inset-0 h-full w-full object-cover" playsInline muted autoPlay />
-      {status === 'starting' && (
-        <div className="absolute inset-0 z-10 flex items-center justify-center bg-black/30 text-white">
-          <div className="rounded-md bg-black/50 px-4 py-3 text-sm font-medium backdrop-blur">
-            {t('starting')}
+    <div className="camera-capture-root fixed inset-0 z-50 grid h-[100svh] grid-rows-[minmax(0,1fr)_auto] overflow-hidden bg-black text-white">
+      <div className="relative min-h-0 overflow-hidden bg-black [touch-action:none]">
+        <video
+          ref={videoRef}
+          className="absolute inset-0 h-full w-full object-cover"
+          playsInline
+          muted
+          autoPlay
+        />
+        {status === 'starting' && (
+          <div className="absolute inset-0 z-10 flex items-center justify-center bg-black/30 text-white">
+            <div className="rounded-md bg-black/50 px-4 py-3 text-sm font-medium backdrop-blur">
+              {t('starting')}
+            </div>
           </div>
-        </div>
-      )}
-      {error && status === 'error' && (
-        <div className="absolute top-4 right-4 left-4 z-30 rounded-md bg-red-600 p-3 text-white shadow-lg">
-          {error}
-        </div>
-      )}
-      <div className="pointer-events-none absolute inset-x-4 top-4 bottom-[7rem] z-10 rounded-lg border border-white/30 sm:bottom-[8rem]" />
-      <div className="absolute inset-x-0 bottom-0 z-20 grid grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-center gap-4 bg-black/80 px-4 pt-4 pb-[calc(1rem+env(safe-area-inset-bottom))] sm:px-6 sm:pt-6 sm:pb-[calc(1.5rem+env(safe-area-inset-bottom))]">
+        )}
+        {error && status === 'error' && (
+          <div className="absolute top-4 right-4 left-4 z-30 rounded-md bg-red-600 p-3 text-white shadow-lg">
+            {error}
+          </div>
+        )}
+        <div className="pointer-events-none absolute inset-x-4 top-4 bottom-4 z-10 rounded-[1.25rem] border border-white/30" />
+      </div>
+
+      <div className="camera-control-bar relative z-20 grid min-h-[6.75rem] shrink-0 grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-center gap-3 bg-black/88 px-4 pt-3 pb-[calc(0.9rem+env(safe-area-inset-bottom))] backdrop-blur sm:min-h-[7.5rem] sm:px-6 sm:pt-4 sm:pb-[calc(1.1rem+env(safe-area-inset-bottom))]">
         <Button
           variant="ghost"
-          className="justify-self-start gap-2 text-white hover:bg-white/10"
+          className="h-11 max-w-full justify-self-start rounded-full bg-white/10 px-3 text-white hover:bg-white/15"
           onClick={onCancel}
+          aria-label={t('cancel')}
         >
-          <ArrowLeft aria-hidden className="h-4 w-4" />
-          {t('cancel')}
+          <ArrowLeft aria-hidden className="h-5 w-5" />
+          <span className="camera-control-label ml-2 hidden min-[390px]:inline">{t('cancel')}</span>
         </Button>
         <button
           aria-label={t('shutter')}
           onClick={handleShutter}
           disabled={status !== 'ready'}
-          className="grid h-16 w-16 place-items-center justify-self-center rounded-full border-4 border-white bg-white text-stone-950 shadow-xl transition-transform active:scale-95 disabled:opacity-50 sm:h-[4.5rem] sm:w-[4.5rem]"
+          className="camera-shutter grid h-16 w-16 place-items-center justify-self-center rounded-full border-4 border-white bg-white text-stone-950 shadow-xl transition-transform active:scale-95 disabled:opacity-50 sm:h-[4.5rem] sm:w-[4.5rem]"
         >
           <Camera aria-hidden className="h-7 w-7" />
         </button>
         <Button
           variant="ghost"
           size="icon"
-          className="justify-self-end text-white hover:bg-white/10"
+          className="h-11 w-11 justify-self-end rounded-full bg-white/10 text-white hover:bg-white/15"
           onClick={() => void switchFacingMode()}
           disabled={status === 'starting'}
           aria-label={t('switchCamera')}
