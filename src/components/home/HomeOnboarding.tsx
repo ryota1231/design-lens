@@ -86,11 +86,11 @@ export function HomeOnboarding() {
       </section>
 
       <div
-        className="home-onboarding-shell mx-auto flex min-h-dvh w-full max-w-md flex-col pb-[calc(9.25rem+env(safe-area-inset-bottom))] lg:max-w-6xl lg:grid lg:grid-cols-[0.9fr_1.1fr] lg:items-center lg:gap-10 lg:px-10 lg:py-10 lg:pb-10"
+        className="home-onboarding-shell mx-auto flex min-h-dvh w-full max-w-md flex-col pb-[calc(9.5rem+env(safe-area-inset-bottom))] lg:max-w-6xl lg:grid lg:grid-cols-[0.9fr_1.1fr] lg:items-center lg:gap-10 lg:px-10 lg:py-10 lg:pb-10"
         onTouchStart={handleTouchStart}
         onTouchEnd={handleTouchEnd}
       >
-        <section className="home-visual-panel relative flex h-[54dvh] min-h-[380px] max-h-[500px] overflow-hidden rounded-b-[2rem] bg-[#0d3028] lg:h-auto lg:min-h-[42rem] lg:max-h-none lg:rounded-[2.4rem]">
+        <section className="home-visual-panel relative flex h-[41dvh] min-h-[275px] max-h-[360px] overflow-hidden rounded-b-[2rem] bg-[#0d3028] lg:h-auto lg:min-h-[42rem] lg:max-h-none lg:rounded-[2.4rem]">
           <SlideVisual key={currentSlide.visual} visual={currentSlide.visual} />
         </section>
 

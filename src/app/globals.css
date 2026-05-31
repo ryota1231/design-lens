@@ -24,7 +24,7 @@ a {
 }
 
 .home-splash-screen {
-  animation: lens-splash-cover 2100ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation: lens-splash-cover 1850ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
 .home-splash-screen::after {
@@ -34,26 +34,26 @@ a {
   content: '';
   background: linear-gradient(180deg, rgb(244 251 248 / 0), #f4fbf8 74%);
   transform: translateY(100%);
-  animation: lens-splash-wipe 2100ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation: lens-splash-wipe 1850ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
 .home-onboarding-shell {
   opacity: 0;
-  transform: translateY(14px);
-  animation: lens-onboarding-ready 560ms cubic-bezier(0.16, 1, 0.3, 1) 1600ms forwards;
+  transform: translateY(18px) scale(0.985);
+  animation: lens-onboarding-ready 680ms cubic-bezier(0.16, 1, 0.3, 1) 1320ms forwards;
 }
 
 .home-visual-panel {
   transform-origin: 50% 0%;
-  animation: lens-visual-enter 720ms cubic-bezier(0.16, 1, 0.3, 1) 1660ms both;
+  animation: lens-visual-enter 760ms cubic-bezier(0.16, 1, 0.3, 1) 1380ms both;
 }
 
 .home-copy-panel {
-  animation: lens-copy-enter 620ms cubic-bezier(0.16, 1, 0.3, 1) 1780ms both;
+  animation: lens-copy-enter 620ms cubic-bezier(0.16, 1, 0.3, 1) 1500ms both;
 }
 
 .home-action-bar {
-  animation: lens-actions-enter 680ms cubic-bezier(0.16, 1, 0.3, 1) 1920ms both;
+  animation: lens-actions-enter 640ms cubic-bezier(0.16, 1, 0.3, 1) 1640ms both;
 }
 
 .home-primary-action,
@@ -62,11 +62,11 @@ a {
 }
 
 .home-primary-action {
-  animation: lens-button-pop 580ms cubic-bezier(0.16, 1, 0.3, 1) 2050ms both;
+  animation: lens-button-pop 520ms cubic-bezier(0.16, 1, 0.3, 1) 1740ms both;
 }
 
 .home-secondary-action {
-  animation: lens-button-pop 580ms cubic-bezier(0.16, 1, 0.3, 1) 2140ms both;
+  animation: lens-button-pop 520ms cubic-bezier(0.16, 1, 0.3, 1) 1820ms both;
 }
 
 .lens-soft-mark {
@@ -103,7 +103,7 @@ a {
 
 @keyframes lens-splash-cover {
   0%,
-  68% {
+  64% {
     opacity: 1;
     visibility: visible;
   }
@@ -180,21 +180,23 @@ a {
 
 @keyframes lens-onboarding-ready {
   0% {
-    transform: translateY(14px);
+    transform: translateY(18px) scale(0.985);
     opacity: 0;
   }
   100% {
-    transform: translateY(0);
+    transform: translateY(0) scale(1);
     opacity: 1;
   }
 }
 
 @keyframes lens-visual-enter {
   0% {
-    transform: translateY(18px) scale(0.965);
+    clip-path: inset(0 0 18% 0 round 0 0 2rem 2rem);
+    transform: translateY(24px) scale(0.975);
     opacity: 0;
   }
   100% {
+    clip-path: inset(0 0 0 0 round 0 0 2rem 2rem);
     transform: translateY(0) scale(1);
     opacity: 1;
   }
@@ -276,9 +278,9 @@ a {
 
 @media (max-width: 767px) and (max-height: 720px) {
   .home-visual-panel {
-    height: 54dvh;
-    min-height: 330px;
-    max-height: 380px;
+    height: 38dvh;
+    min-height: 245px;
+    max-height: 300px;
   }
 
   .home-copy-title {
