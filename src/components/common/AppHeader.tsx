@@ -9,7 +9,7 @@ export function AppHeader() {
   return (
     <header className="sticky top-0 z-20 border-b border-stone-200/80 bg-white/90 px-4 py-3 backdrop-blur">
       <div className="mx-auto flex max-w-5xl items-center justify-between gap-4">
-        <Link href="/" aria-label={t('appName')} className="flex min-w-0 items-center gap-2">
+        <Link href="/?ready=1" aria-label={t('appName')} className="flex min-w-0 items-center gap-2">
           <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-md bg-emerald-950 text-white">
             <Eye aria-hidden className="h-5 w-5" />
           </span>

@@ -127,7 +127,7 @@ export default function AnalyzeDetailPage({ params }: { params: Promise<{ id: st
           <CircleAlert aria-hidden className="h-8 w-8 text-amber-700" />
           <p className="text-sm leading-6 text-stone-700">{t('errors.loadFailed')}</p>
           <Button variant="secondary" className="gap-2 bg-white shadow-sm" asChild>
-            <Link href="/">
+            <Link href="/?ready=1">
               <ArrowLeft aria-hidden className="h-4 w-4" />
               {t('common.back')}
             </Link>
@@ -158,7 +158,7 @@ export default function AnalyzeDetailPage({ params }: { params: Promise<{ id: st
             className="h-11 w-11 rounded-full bg-white shadow-[0_4px_12px_rgba(15,23,42,0.10)]"
             asChild
           >
-            <Link href="/" aria-label={t('common.back')}>
+            <Link href="/?ready=1" aria-label={t('common.back')}>
               <ArrowLeft aria-hidden className="h-5 w-5" />
             </Link>
           </Button>
