@@ -83,7 +83,16 @@
     "kicker": "コレクション",
     "title": "観察した図鑑",
     "empty": "まだ何も観察していません。撮影から始めましょう。",
-    "openItem": "詳細を見る"
+    "openItem": "詳細を見る",
+    "filterLabel": "ジャンルで絞り込む",
+    "noFilterResults": "このジャンルの観察はまだありません。",
+    "genres": {
+      "all": "すべて",
+      "cool": "クール",
+      "modern": "モダン",
+      "cute": "可愛い",
+      "retro": "レトロ風"
+    }
   },
   "errors": {
     "analysisFailed": "AI解析に失敗しました。時間をおいて再度お試しください。",

@@ -2,7 +2,7 @@
 
 import Image from 'next/image';
 import { ArrowUpRight, Camera, Palette } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useLocale, useTranslations } from 'next-intl';
 import { Button } from '@/components/ui/button';
 import { listRecentAnalyses } from '@/lib/db/repository';
@@ -14,10 +14,29 @@ interface Item {
   thumbUrl: string | null;
 }
 
+type StyleGenre = 'cool' | 'modern' | 'cute' | 'retro';
+type GenreFilter = 'all' | StyleGenre;
+
+const GENRE_FILTERS: GenreFilter[] = ['all', 'cool', 'modern', 'cute', 'retro'];
+const FALLBACK_GENRES: StyleGenre[] = ['modern', 'cool', 'cute', 'retro'];
+
 export function PhotoGrid() {
   const t = useTranslations();
   const locale = useLocale();
   const [items, setItems] = useState<Item[]>([]);
+  const [activeGenre, setActiveGenre] = useState<GenreFilter>('all');
+
+  const posters = useMemo(
+    () =>
+      items.map((item, index) => ({
+        ...item,
+        genre: inferStyleGenre(item.analysis, index),
+        sourceIndex: index,
+      })),
+    [items],
+  );
+  const visiblePosters =
+    activeGenre === 'all' ? posters : posters.filter((item) => item.genre === activeGenre);
 
   useEffect(() => {
     let cancelled = false;
@@ -68,33 +87,66 @@ export function PhotoGrid() {
   }
 
   return (
-    <ul className="grid gap-4 sm:grid-cols-2 sm:gap-5 xl:grid-cols-3">
-      {items.map(({ analysis, thumbUrl }, index) => (
-        <CollectionPoster
-          key={analysis.id}
-          analysis={analysis}
-          index={index}
-          locale={locale}
-          thumbUrl={thumbUrl}
-        />
-      ))}
-    </ul>
+    <div className="space-y-4">
+      <div aria-label={t('archive.filterLabel')} className="-mx-4 overflow-x-auto px-4 pb-1">
+        <div className="flex min-w-max gap-2">
+          {GENRE_FILTERS.map((genre) => (
+            <button
+              key={genre}
+              type="button"
+              aria-pressed={activeGenre === genre}
+              className={`rounded-full px-4 py-2 text-[12px] font-black shadow-sm transition ${
+                activeGenre === genre
+                  ? 'bg-[#123f36] text-white'
+                  : 'bg-white text-stone-600 hover:bg-[#ecfbf6] hover:text-[#006241]'
+              }`}
+              onClick={() => setActiveGenre(genre)}
+            >
+              {t(`archive.genres.${genre}`)}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {visiblePosters.length === 0 ? (
+        <div className="grid min-h-48 place-items-center rounded-[1.5rem] border border-dashed border-stone-300 bg-white/70 px-6 py-10 text-center">
+          <p className="text-sm leading-6 font-semibold text-stone-600">
+            {t('archive.noFilterResults')}
+          </p>
+        </div>
+      ) : (
+        <ul className="grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-3 xl:grid-cols-4">
+          {visiblePosters.map(({ analysis, genre, sourceIndex, thumbUrl }) => (
+            <CollectionPoster
+              key={analysis.id}
+              analysis={analysis}
+              genre={genre}
+              index={sourceIndex}
+              locale={locale}
+              thumbUrl={thumbUrl}
+            />
+          ))}
+        </ul>
+      )}
+    </div>
   );
 }
 
 function CollectionPoster({
   analysis,
+  genre,
   index,
   locale,
   thumbUrl,
 }: {
   analysis: AnalysisRecord;
+  genre: StyleGenre;
   index: number;
   locale: string;
   thumbUrl: string | null;
 }) {
   const t = useTranslations();
-  const category = t(`analyze.categories.${analysis.category}`);
+  const genreLabel = t(`archive.genres.${genre}`);
   const colors = analysis.colors.length > 0 ? analysis.colors : [{ hex: fallbackAccent(index), role: '' }];
   const accent = colors[0]?.hex ?? fallbackAccent(index);
   const tone = getPosterTone(accent, index);
@@ -107,7 +159,7 @@ function CollectionPoster({
     <li>
       <Link
         href={`/analyze/${analysis.id}`}
-        className="group relative grid min-h-[15.75rem] grid-cols-[0.9fr_1.1fr] overflow-hidden rounded-[1.65rem] border border-white/65 p-5 shadow-[0_20px_48px_rgba(15,23,42,0.11)] transition duration-300 hover:-translate-y-0.5 hover:shadow-[0_26px_62px_rgba(15,23,42,0.14)] focus-visible:ring-2 focus-visible:ring-[#00c875] focus-visible:outline-none sm:min-h-[17.5rem] sm:p-6"
+        className="group relative flex min-h-[23rem] flex-col overflow-hidden rounded-[1.35rem] border border-white/65 p-3 shadow-[0_18px_42px_rgba(15,23,42,0.11)] transition duration-300 hover:-translate-y-0.5 hover:shadow-[0_24px_56px_rgba(15,23,42,0.14)] focus-visible:ring-2 focus-visible:ring-[#00c875] focus-visible:outline-none sm:min-h-[25rem] sm:rounded-[1.65rem] sm:p-4"
         style={{
           background: `linear-gradient(135deg, ${tone.surface} 0%, ${tone.soft} 52%, ${tone.deep} 100%)`,
         }}
@@ -121,37 +173,57 @@ function CollectionPoster({
           className="absolute -right-12 bottom-0 h-44 w-44 rounded-full bg-white/40 blur-2xl"
         />
 
-        <div className="relative z-10 flex min-w-0 flex-col justify-between pr-2">
-          <div>
-            <div className="flex items-start justify-between gap-2">
-              <div>
-                <p className="text-[10px] font-black tracking-[0.16em] text-stone-500/75 uppercase">
-                  {date}
-                </p>
-                <p className="mt-1 text-[2.7rem] leading-none font-light font-serif text-stone-500/45 italic">
-                  {String(index + 1).padStart(2, '0')}
-                </p>
-              </div>
-              <span className="inline-flex items-center gap-1 rounded-full bg-white/70 px-2.5 py-1 text-[10px] font-black text-stone-700 shadow-sm backdrop-blur">
-                <Palette aria-hidden className="h-3 w-3 text-[#00a979]" />
-                {category}
-              </span>
-            </div>
+        <div className="relative z-10 flex items-center justify-between gap-2">
+          <p className="text-[15px] leading-none font-black tracking-normal text-stone-800 sm:text-lg">
+            {date}
+          </p>
+          <span className="inline-flex shrink-0 items-center gap-1 rounded-full bg-white/72 px-2.5 py-1 text-[10px] font-black text-stone-700 shadow-sm backdrop-blur">
+            <Palette aria-hidden className="h-3 w-3 text-[#00a979]" />
+            {genreLabel}
+          </span>
+        </div>
 
-            <h2 className="mt-4 text-[12px] font-black tracking-[0.12em] text-stone-700 uppercase">
+        <div className="relative z-10 mt-4 flex justify-center">
+          <div className="relative aspect-[9/18.5] w-full max-w-[9.25rem] rotate-[2deg] rounded-[1.45rem] border-[5px] border-white bg-stone-950 p-1.5 shadow-[0_20px_38px_rgba(15,23,42,0.24)] transition-transform duration-300 group-hover:rotate-[1deg] group-hover:scale-[1.02] sm:max-w-[10rem]">
+            <span
+              aria-hidden
+              className="absolute left-1/2 top-1.5 z-20 h-2 w-10 -translate-x-1/2 rounded-full bg-stone-950"
+            />
+            <div className="relative h-full overflow-hidden rounded-[1.05rem] bg-stone-100">
+              {thumbUrl ? (
+                <Image
+                  src={thumbUrl}
+                  alt=""
+                  fill
+                  sizes="180px"
+                  className="object-cover"
+                  unoptimized
+                />
+              ) : (
+                <div className="grid h-full place-items-center bg-[#ecfbf6] text-[#006241]">
+                  <Camera aria-hidden className="h-9 w-9" />
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+
+        <div className="relative z-10 mt-4 flex min-w-0 flex-1 flex-col justify-between">
+          <div>
+            <h2 className="text-[11px] font-black tracking-[0.08em] text-stone-700 uppercase">
               {t('analyze.concept')}
             </h2>
-            <p className="mt-2 line-clamp-5 text-[12px] leading-5 font-semibold text-stone-700 sm:text-[13px] sm:leading-[1.65]">
+            <p className="mt-1.5 line-clamp-4 text-[11px] leading-[1.65] font-semibold text-stone-700 sm:text-[12px]">
               {analysis.concept}
             </p>
           </div>
 
-          <div className="mt-4">
-            <div className="mb-2 flex items-center gap-2">
+          <div className="mt-3">
+            <div className="mb-2 flex flex-wrap items-center gap-1.5">
               {colors.slice(0, 4).map((color, colorIndex) => (
                 <span
                   key={`${analysis.id}-${color.hex}-${colorIndex}`}
-                  className="h-4 w-4 rounded-[0.32rem] border border-white/80 shadow-sm"
+                  className="h-4 w-4 rounded-[0.32rem] border border-white/80 shadow-sm sm:h-5 sm:w-5"
                   style={{ backgroundColor: color.hex }}
                   title={`${color.hex} ${color.role}`}
                 />
@@ -166,37 +238,56 @@ function CollectionPoster({
             </span>
           </div>
         </div>
-
-        <div className="relative z-10 flex items-center justify-end">
-          <div className="relative aspect-[9/18.5] w-[7.4rem] rotate-[3deg] rounded-[1.45rem] border-[5px] border-white bg-stone-950 p-1.5 shadow-[0_20px_38px_rgba(15,23,42,0.24)] transition-transform duration-300 group-hover:rotate-[1deg] group-hover:scale-[1.02] sm:w-[8.2rem]">
-            <span
-              aria-hidden
-              className="absolute left-1/2 top-1.5 z-20 h-2 w-10 -translate-x-1/2 rounded-full bg-stone-950"
-            />
-            <div className="relative h-full overflow-hidden rounded-[1.05rem] bg-stone-100">
-              {thumbUrl ? (
-                <Image
-                  src={thumbUrl}
-                  alt=""
-                  fill
-                  sizes="160px"
-                  className="object-cover"
-                  unoptimized
-                />
-              ) : (
-                <div className="grid h-full place-items-center bg-[#ecfbf6] text-[#006241]">
-                  <Camera aria-hidden className="h-9 w-9" />
-                </div>
-              )}
-              <div className="absolute inset-x-2 bottom-2 rounded-full bg-white/88 px-3 py-2 text-[10px] font-black text-stone-800 shadow-sm backdrop-blur">
-                Design Lens
-              </div>
-            </div>
-          </div>
-        </div>
       </Link>
     </li>
   );
+}
+
+function inferStyleGenre(analysis: AnalysisRecord, index: number): StyleGenre {
+  const text = [
+    analysis.concept,
+    analysis.typography,
+    analysis.visualFlow,
+    analysis.target,
+    ...analysis.fontHints,
+    ...analysis.improvements,
+    ...analysis.applications,
+    ...analysis.colors.map((color) => color.role),
+  ]
+    .join(' ')
+    .toLowerCase();
+
+  if (/可愛い|かわいい|cute|pop|ポップ|親し|丸み|やわらか|柔らか|ピンク|パステル/.test(text)) {
+    return 'cute';
+  }
+
+  if (/レトロ|retro|vintage|ヴィンテージ|クラシック|classic|懐か|ノスタル|昭和|手書き|ブラウン|セピア/.test(text)) {
+    return 'retro';
+  }
+
+  if (/クール|cool|シャープ|高級|知的|落ち着|信頼|ネイビー|青|ブルー|黒|black|グレー/.test(text)) {
+    return 'cool';
+  }
+
+  if (/モダン|modern|洗練|ミニマル|minimal|シンプル|余白|clean|現代|都会/.test(text)) {
+    return 'modern';
+  }
+
+  const firstColor = analysis.colors.find((color) => isHexColor(color.hex))?.hex;
+  if (firstColor) return inferGenreFromColor(firstColor);
+
+  return FALLBACK_GENRES[index % FALLBACK_GENRES.length] ?? 'modern';
+}
+
+function inferGenreFromColor(hex: string): StyleGenre {
+  const rgb = hexToRgb(hex);
+  if (!rgb) return 'modern';
+
+  const { h, s, l } = rgbToHsl(rgb);
+  if ((h >= 300 || h <= 24) && s > 0.28 && l > 0.42) return 'cute';
+  if (h >= 24 && h <= 58 && l < 0.72) return 'retro';
+  if ((h >= 180 && h <= 250) || l < 0.28) return 'cool';
+  return 'modern';
 }
 
 function fallbackAccent(index: number): string {
@@ -236,6 +327,31 @@ function hexToRgb(hex: string): { r: number; g: number; b: number } | null {
     g: Number.parseInt(match[2] ?? '00', 16),
     b: Number.parseInt(match[3] ?? '00', 16),
   };
+}
+
+function rgbToHsl({ r, g, b }: { r: number; g: number; b: number }): {
+  h: number;
+  s: number;
+  l: number;
+} {
+  const red = r / 255;
+  const green = g / 255;
+  const blue = b / 255;
+  const max = Math.max(red, green, blue);
+  const min = Math.min(red, green, blue);
+  const l = (max + min) / 2;
+
+  if (max === min) return { h: 0, s: 0, l };
+
+  const delta = max - min;
+  const s = l > 0.5 ? delta / (2 - max - min) : delta / (max + min);
+  let h = 0;
+
+  if (max === red) h = (green - blue) / delta + (green < blue ? 6 : 0);
+  if (max === green) h = (blue - red) / delta + 2;
+  if (max === blue) h = (red - green) / delta + 4;
+
+  return { h: h * 60, s, l };
 }
 
 function getPhotoThumbnailSrc(photo: PhotoRecord): { kind: 'object-url' | 'data-url'; value: string } | null {

@@ -83,7 +83,16 @@
     "kicker": "Collection",
     "title": "Your design archive",
     "empty": "Nothing observed yet. Start with a capture.",
-    "openItem": "Open"
+    "openItem": "Open",
+    "filterLabel": "Filter by style genre",
+    "noFilterResults": "No observations in this style yet.",
+    "genres": {
+      "all": "All",
+      "cool": "Cool",
+      "modern": "Modern",
+      "cute": "Cute",
+      "retro": "Retro"
+    }
   },
   "errors": {
     "analysisFailed": "Analysis failed. Please try again later.",
