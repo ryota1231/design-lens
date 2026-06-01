@@ -90,7 +90,7 @@ export function HomeOnboarding() {
         onTouchStart={handleTouchStart}
         onTouchEnd={handleTouchEnd}
       >
-        <section className="home-visual-panel relative flex h-[46dvh] min-h-[330px] max-h-[430px] overflow-hidden rounded-b-[2rem] bg-[#0d3028] lg:h-auto lg:min-h-[42rem] lg:max-h-none lg:rounded-[2.4rem]">
+        <section className="home-visual-panel relative flex h-[54dvh] min-h-[370px] max-h-[485px] overflow-hidden rounded-b-[2rem] bg-[#0d3028] lg:h-auto lg:min-h-[42rem] lg:max-h-none lg:rounded-[2.4rem]">
           <SlideVisual key={currentSlide.visual} visual={currentSlide.visual} />
         </section>
 
@@ -168,8 +168,8 @@ function CityVisual() {
           />
         ))}
       </div>
-      <div className="home-feature-card relative z-10 flex w-full max-w-[20rem] items-end justify-center">
-        <div className="relative mb-9 w-[14rem] rotate-[-2deg] rounded-[1.55rem] bg-white p-3 shadow-[0_20px_46px_rgba(31,41,55,0.16)]">
+      <div className="home-feature-card relative z-10 flex w-full max-w-[22.5rem] items-end justify-center">
+        <div className="relative mb-9 w-[16rem] rotate-[-2deg] rounded-[1.7rem] bg-white p-3.5 shadow-[0_20px_46px_rgba(31,41,55,0.16)]">
           <div className="overflow-hidden rounded-[1.15rem] bg-[#143f35] p-3">
             <div className="rounded-[1rem] bg-[#ffd757] p-3">
               <div className="h-2.5 rounded-full bg-[#4b3f18]" />
