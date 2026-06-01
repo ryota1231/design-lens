@@ -86,11 +86,11 @@ export function HomeOnboarding() {
       </section>
 
       <div
-        className="home-onboarding-shell mx-auto flex min-h-dvh w-full max-w-md flex-col pb-[calc(9.5rem+env(safe-area-inset-bottom))] lg:max-w-6xl lg:grid lg:grid-cols-[0.9fr_1.1fr] lg:items-center lg:gap-10 lg:px-10 lg:py-10 lg:pb-10"
+        className="home-onboarding-shell mx-auto flex min-h-dvh w-full max-w-md flex-col pb-0 lg:max-w-6xl lg:grid lg:grid-cols-[0.9fr_1.1fr] lg:items-center lg:gap-10 lg:px-10 lg:py-10 lg:pb-10"
         onTouchStart={handleTouchStart}
         onTouchEnd={handleTouchEnd}
       >
-        <section className="home-visual-panel relative flex h-[41dvh] min-h-[275px] max-h-[360px] overflow-hidden rounded-b-[2rem] bg-[#0d3028] lg:h-auto lg:min-h-[42rem] lg:max-h-none lg:rounded-[2.4rem]">
+        <section className="home-visual-panel relative flex h-[46dvh] min-h-[330px] max-h-[430px] overflow-hidden rounded-b-[2rem] bg-[#0d3028] lg:h-auto lg:min-h-[42rem] lg:max-h-none lg:rounded-[2.4rem]">
           <SlideVisual key={currentSlide.visual} visual={currentSlide.visual} />
         </section>
 
@@ -127,7 +127,7 @@ export function HomeOnboarding() {
             </div>
           </div>
 
-          <div className="home-action-bar fixed inset-x-0 bottom-0 z-20 mx-auto grid w-full max-w-md gap-2 bg-[#f4fbf8]/95 px-5 pt-3 pb-[calc(0.95rem+env(safe-area-inset-bottom))] shadow-[0_-14px_30px_rgba(15,23,42,0.08)] backdrop-blur lg:static lg:max-w-sm lg:bg-transparent lg:p-0 lg:pt-0 lg:shadow-none lg:backdrop-blur-none">
+          <div className="home-action-bar sticky inset-x-0 bottom-0 z-20 -mx-5 mt-auto grid w-[calc(100%+2.5rem)] max-w-md gap-2 bg-[#f4fbf8]/95 px-5 pt-3 pb-[calc(0.45rem+env(safe-area-inset-bottom))] shadow-[0_-14px_30px_rgba(15,23,42,0.08)] backdrop-blur lg:static lg:mx-auto lg:w-full lg:max-w-sm lg:bg-transparent lg:p-0 lg:pt-0 lg:shadow-none lg:backdrop-blur-none">
             <Link
               href="/capture"
               className="home-primary-action inline-flex min-h-[3.25rem] items-center justify-center gap-3 rounded-full bg-[#00c875] px-6 text-[16px] font-black text-white shadow-[0_14px_30px_rgba(0,200,117,0.24)] transition-transform active:scale-[0.98] lg:min-h-14 lg:text-[17px]"

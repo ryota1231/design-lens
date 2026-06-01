@@ -163,7 +163,7 @@ a {
     opacity: 0;
   }
   100% {
-    transform: translateY(0) scale(1);
+    transform: none;
     opacity: 1;
   }
 }
@@ -208,7 +208,7 @@ a {
     opacity: 0;
   }
   100% {
-    transform: translateY(0);
+    transform: none;
     opacity: 1;
   }
 }
@@ -278,9 +278,9 @@ a {
 
 @media (max-width: 767px) and (max-height: 720px) {
   .home-visual-panel {
-    height: 38dvh;
-    min-height: 245px;
-    max-height: 300px;
+    height: 42dvh;
+    min-height: 270px;
+    max-height: 335px;
   }
 
   .home-copy-title {
