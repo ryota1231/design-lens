@@ -31,6 +31,7 @@ vi.mock('next-intl', () => ({
 }));
 
 const analysis: AnalysisResult = {
+  styleGenre: 'ポップ',
   concept: '季節限定の楽しさをすぐ伝える設計',
   typography: '太く読みやすい文字',
   fontHints: ['ヒゲのない太い文字（極太サンセリフ）'],

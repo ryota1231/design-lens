@@ -183,6 +183,7 @@ function normalizeAnalysisJson(
 
   return {
     concept: toText(json.concept, fallback.concept),
+    styleGenre: normalizeStyleGenre(json, language),
     typography: toText(json.typography, fallback.typography),
     fontHints: toStringArray(json.fontHints),
     colors: normalizeColors(json.colors, language),
@@ -200,6 +201,39 @@ function normalizeAnalysisJson(
       typography: json.typography,
     }),
   };
+}
+
+function normalizeStyleGenre(json: Record<string, unknown>, language: 'ja' | 'en'): string {
+  const direct = toText(json.styleGenre, '');
+  if (direct) return direct.slice(0, language === 'ja' ? 12 : 24);
+
+  const text = [
+    json.concept,
+    json.typography,
+    json.composition,
+    json.target,
+    json.visualFlow,
+    ...(Array.isArray(json.fontHints) ? json.fontHints : []),
+    ...(Array.isArray(json.improvements) ? json.improvements : []),
+    ...(Array.isArray(json.applications) ? json.applications : []),
+  ]
+    .map((item) => toText(item, ''))
+    .join(' ')
+    .toLowerCase();
+
+  const labels =
+    language === 'ja'
+      ? { premium: '高級感', friendly: '親しみ系', retro: 'レトロ', pop: 'ポップ', cool: 'クール', minimal: 'ミニマル', modern: 'モダン' }
+      : { premium: 'Premium', friendly: 'Friendly', retro: 'Retro', pop: 'Pop', cool: 'Cool', minimal: 'Minimal', modern: 'Modern' };
+
+  if (/高級|上質|洗練|luxury|premium|elegant|ラグジュアリー/.test(text)) return labels.premium;
+  if (/可愛い|かわいい|cute|親し|丸み|やわらか|柔らか|ピンク|パステル/.test(text)) return labels.friendly;
+  if (/レトロ|retro|vintage|ヴィンテージ|クラシック|classic|懐か|ノスタル|昭和|手書き/.test(text)) return labels.retro;
+  if (/ポップ|pop|鮮やか|楽しい|元気|カラフル|ビビッド/.test(text)) return labels.pop;
+  if (/クール|cool|シャープ|知的|落ち着|信頼|ネイビー|青|ブルー|黒|black|グレー/.test(text)) return labels.cool;
+  if (/ミニマル|minimal|シンプル|余白|clean|すっきり/.test(text)) return labels.minimal;
+
+  return labels.modern;
 }
 
 function normalizeTextStyles(

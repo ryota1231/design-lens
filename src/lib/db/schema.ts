@@ -14,6 +14,7 @@ export interface AnalysisRecord {
   id: string;
   photoId: string;
   concept: string;
+  styleGenre?: string;
   typography: string;
   fontHints: string[];
   colors: Array<{ hex: string; role: string }>;

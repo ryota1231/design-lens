@@ -82,10 +82,44 @@ async function savePhotoRecord(args: {
       id: args.analysisId,
       photoId: args.photoId,
       ...args.analysis,
+      styleGenre: resolveStyleGenre(args.analysis, args.language),
       language: args.language,
       createdAt: args.now,
     });
   });
+}
+
+function resolveStyleGenre(analysis: AnalysisResult, language: 'ja' | 'en'): string {
+  const direct = analysis.styleGenre.trim();
+  if (direct) return direct;
+
+  const text = [
+    analysis.concept,
+    analysis.typography,
+    analysis.visualFlow,
+    analysis.target,
+    ...analysis.fontHints,
+    ...analysis.principles.map((principle) => `${principle.name} ${principle.description}`),
+    ...analysis.improvements,
+    ...analysis.applications,
+    ...analysis.colors.map((color) => color.role),
+  ]
+    .join(' ')
+    .toLowerCase();
+
+  const labels =
+    language === 'ja'
+      ? { premium: '高級感', friendly: '親しみ系', retro: 'レトロ', pop: 'ポップ', cool: 'クール', minimal: 'ミニマル', modern: 'モダン' }
+      : { premium: 'Premium', friendly: 'Friendly', retro: 'Retro', pop: 'Pop', cool: 'Cool', minimal: 'Minimal', modern: 'Modern' };
+
+  if (/高級|上質|洗練|luxury|premium|elegant|ラグジュアリー/.test(text)) return labels.premium;
+  if (/可愛い|かわいい|cute|親し|丸み|やわらか|柔らか|ピンク|パステル/.test(text)) return labels.friendly;
+  if (/レトロ|retro|vintage|ヴィンテージ|クラシック|classic|懐か|ノスタル|昭和|手書き/.test(text)) return labels.retro;
+  if (/ポップ|pop|鮮やか|楽しい|元気|カラフル|ビビッド/.test(text)) return labels.pop;
+  if (/クール|cool|シャープ|知的|落ち着|信頼|ネイビー|青|ブルー|黒|black|グレー/.test(text)) return labels.cool;
+  if (/ミニマル|minimal|シンプル|余白|clean|すっきり/.test(text)) return labels.minimal;
+
+  return labels.modern;
 }
 
 export async function listRecentAnalyses(args: { limit: number }): Promise<AnalysisRecord[]> {

@@ -18,8 +18,9 @@ import type { AnalysisResult } from '@/types/analysis';
 import { ColorPalette } from './ColorPalette';
 
 interface Props {
-  analysis: Omit<AnalysisResult, 'rawResponse' | 'textStyles'> & {
+  analysis: Omit<AnalysisResult, 'rawResponse' | 'textStyles' | 'styleGenre'> & {
     rawResponse?: string;
+    styleGenre?: string;
     textStyles?: AnalysisResult['textStyles'];
   };
 }

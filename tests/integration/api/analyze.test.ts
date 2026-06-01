@@ -9,6 +9,7 @@ import { analyzeImage } from '@/lib/claude/client';
 import type { AnalysisResult } from '@/types/analysis';
 
 const validAnalysis: AnalysisResult = {
+  styleGenre: 'ポップ',
   concept: 'c',
   typography: 't',
   fontHints: [],

@@ -11,6 +11,7 @@ import {
 import type { AnalysisResult } from '@/types/analysis';
 
 const sampleAnalysis: AnalysisResult = {
+  styleGenre: 'ポップ',
   concept: 'セール訴求',
   typography: '極太サンセリフ',
   fontHints: ['Impact'],

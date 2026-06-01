@@ -20,6 +20,7 @@ export const TextStyleSchema = z.object({
 
 export const AnalysisResultSchema = z.object({
   concept: z.string().min(1),
+  styleGenre: z.string().default(''),
   typography: z.string().min(1),
   fontHints: z.array(z.string()),
   colors: z.array(ColorSchema),

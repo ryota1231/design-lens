@@ -80,6 +80,7 @@ export default function AnalyzeDetailPage({ params }: { params: Promise<{ id: st
         body: JSON.stringify({
           analysis: {
             concept: analysis.concept,
+            styleGenre: analysis.styleGenre ?? '',
             typography: analysis.typography,
             textStyles: analysis.textStyles ?? [],
             fontHints: analysis.fontHints,

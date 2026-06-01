@@ -205,6 +205,7 @@ describe('generateReproductionPrompt', () => {
     const result = await generateReproductionPrompt({
       analysis: {
         concept: 'c',
+        styleGenre: 'ポップ',
         typography: 't',
         fontHints: [],
         colors: [],
