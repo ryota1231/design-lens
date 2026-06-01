@@ -80,6 +80,7 @@
     "promptCopied": "Copied"
   },
   "archive": {
+    "kicker": "Collection",
     "title": "Your design archive",
     "empty": "Nothing observed yet. Start with a capture.",
     "openItem": "Open"

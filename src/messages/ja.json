@@ -80,6 +80,7 @@
     "promptCopied": "コピーしました"
   },
   "archive": {
+    "kicker": "コレクション",
     "title": "観察した図鑑",
     "empty": "まだ何も観察していません。撮影から始めましょう。",
     "openItem": "詳細を見る"
