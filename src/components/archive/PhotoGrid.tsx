@@ -178,11 +178,11 @@ function CollectionPoster({
         />
 
         <div className="relative z-10 flex items-center justify-between gap-2">
-          <p className="text-[15px] leading-none font-black tracking-normal text-stone-800 sm:text-lg">
+          <p className="shrink-0 whitespace-nowrap text-[17px] leading-none font-black tracking-normal text-stone-800 sm:text-lg">
             {date}
           </p>
           {styleGenre && (
-            <span className="inline-flex min-w-0 shrink items-center gap-1 rounded-full bg-white/72 px-2.5 py-1 text-[10px] font-black text-stone-700 shadow-sm backdrop-blur">
+            <span className="inline-flex max-w-[5.75rem] min-w-0 shrink items-center gap-1 rounded-full bg-white/72 px-2.5 py-1 text-[10px] font-black text-stone-700 shadow-sm backdrop-blur">
               <Palette aria-hidden className="h-3 w-3 shrink-0 text-[#00a979]" />
               <span className="truncate">{styleGenre}</span>
             </span>
@@ -251,7 +251,36 @@ function CollectionPoster({
 
 function getStyleGenre(analysis: AnalysisRecord): string | null {
   const genre = analysis.styleGenre?.trim() || inferFallbackStyleGenre(analysis);
-  return genre || null;
+  return compactStyleGenre(genre) || null;
+}
+
+function compactStyleGenre(value: string): string {
+  const text = value.trim();
+  const normalized = text.toLowerCase();
+
+  if (/テック|tech|digital|デジタル|ミニマル|minimal|シンプル|simple|clean|すっきり/.test(normalized)) {
+    return 'ミニマル';
+  }
+  if (/高級|上質|洗練|luxury|premium|elegant|ラグジュアリー|エレガント/.test(normalized)) {
+    return '高級感';
+  }
+  if (/可愛い|かわいい|cute|親し|丸み|やわらか|柔らか|ピンク|パステル|friendly/.test(normalized)) {
+    return '親しみ';
+  }
+  if (/レトロ|retro|vintage|ヴィンテージ|クラシック|classic|懐か|ノスタル|昭和|手書き/.test(normalized)) {
+    return 'レトロ';
+  }
+  if (/ポップ|pop|鮮やか|楽しい|元気|カラフル|ビビッド/.test(normalized)) {
+    return 'ポップ';
+  }
+  if (/クール|cool|シャープ|知的|落ち着|信頼|ネイビー|青|ブルー|黒|black|グレー/.test(normalized)) {
+    return 'クール';
+  }
+  if (/モダン|modern|現代|都会|先進/.test(normalized)) {
+    return 'モダン';
+  }
+
+  return Array.from(text.replace(/\s+/g, '')).slice(0, 5).join('');
 }
 
 function inferFallbackStyleGenre(analysis: AnalysisRecord): string {
@@ -270,7 +299,7 @@ function inferFallbackStyleGenre(analysis: AnalysisRecord): string {
     .toLowerCase();
 
   if (/高級|上質|洗練|luxury|premium|elegant|ラグジュアリー/.test(text)) return '高級感';
-  if (/可愛い|かわいい|cute|親し|丸み|やわらか|柔らか|ピンク|パステル/.test(text)) return '親しみ系';
+  if (/可愛い|かわいい|cute|親し|丸み|やわらか|柔らか|ピンク|パステル/.test(text)) return '親しみ';
   if (/レトロ|retro|vintage|ヴィンテージ|クラシック|classic|懐か|ノスタル|昭和|手書き/.test(text)) return 'レトロ';
   if (/ポップ|pop|鮮やか|楽しい|元気|カラフル|ビビッド/.test(text)) return 'ポップ';
   if (/クール|cool|シャープ|知的|落ち着|信頼|ネイビー|青|ブルー|黒|black|グレー/.test(text)) return 'クール';
@@ -288,7 +317,7 @@ function inferGenreFromColor(hex: string): string {
   if (!rgb) return 'モダン';
 
   const { h, s, l } = rgbToHsl(rgb);
-  if ((h >= 300 || h <= 24) && s > 0.28 && l > 0.42) return '親しみ系';
+  if ((h >= 300 || h <= 24) && s > 0.28 && l > 0.42) return '親しみ';
   if (h >= 24 && h <= 58 && l < 0.72) return 'レトロ';
   if ((h >= 180 && h <= 250) || l < 0.28) return 'クール';
   return 'モダン';

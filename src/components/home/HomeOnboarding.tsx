@@ -7,7 +7,7 @@ import { Link } from '@/lib/i18n/routing';
 
 const SWIPE_THRESHOLD_PX = 44;
 
-export function HomeOnboarding() {
+export function HomeOnboarding({ skipSplash = false }: { skipSplash?: boolean }) {
   const t = useTranslations('home');
   const [slideIndex, setSlideIndex] = useState(0);
   const touchStartX = useRef<number | null>(null);
@@ -61,32 +61,34 @@ export function HomeOnboarding() {
 
   return (
     <main className="min-h-dvh overflow-x-hidden bg-[#f4fbf8] text-stone-950">
-      <section
-        data-home-splash
-        aria-hidden="true"
-        className="home-splash-screen fixed inset-0 z-30 grid place-items-center bg-white"
-      >
-        <div className="animate-[lens-splash-in_900ms_cubic-bezier(0.16,1,0.3,1)_both] px-8 text-center">
-          <div className="lens-soft-mark mx-auto mb-5 grid h-28 w-28 place-items-center rounded-[2.35rem] bg-[#e9fbf3] text-[#006241] shadow-[0_24px_60px_rgba(0,98,65,0.16)]">
-            <Sparkles
-              aria-hidden
-              className="lens-soft-mark-sparkle absolute right-5 top-5 h-5 w-5 text-[#00c875]"
-            />
-            <Camera aria-hidden className="h-14 w-14" strokeWidth={2.15} />
-            <span className="absolute bottom-7 h-2 w-10 rounded-full bg-[#00c875]/25" />
+      {!skipSplash && (
+        <section
+          data-home-splash
+          aria-hidden="true"
+          className="home-splash-screen fixed inset-0 z-30 grid place-items-center bg-white"
+        >
+          <div className="animate-[lens-splash-in_900ms_cubic-bezier(0.16,1,0.3,1)_both] px-8 text-center">
+            <div className="lens-soft-mark mx-auto mb-5 grid h-28 w-28 place-items-center rounded-[2.35rem] bg-[#e9fbf3] text-[#006241] shadow-[0_24px_60px_rgba(0,98,65,0.16)]">
+              <Sparkles
+                aria-hidden
+                className="lens-soft-mark-sparkle absolute right-5 top-5 h-5 w-5 text-[#00c875]"
+              />
+              <Camera aria-hidden className="h-14 w-14" strokeWidth={2.15} />
+              <span className="absolute bottom-7 h-2 w-10 rounded-full bg-[#00c875]/25" />
+            </div>
+            <p className="text-[13px] font-bold text-[#00a979]">{t('splashKicker')}</p>
+            <h1 className="mt-1 text-[2.75rem] leading-none font-black tracking-normal text-[#006241]">
+              Design Lens
+            </h1>
+            <p className="mx-auto mt-4 max-w-[16rem] text-[15px] leading-7 font-semibold text-stone-500">
+              {t('splashCaption')}
+            </p>
           </div>
-          <p className="text-[13px] font-bold text-[#00a979]">{t('splashKicker')}</p>
-          <h1 className="mt-1 text-[2.75rem] leading-none font-black tracking-normal text-[#006241]">
-            Design Lens
-          </h1>
-          <p className="mx-auto mt-4 max-w-[16rem] text-[15px] leading-7 font-semibold text-stone-500">
-            {t('splashCaption')}
-          </p>
-        </div>
-      </section>
+        </section>
+      )}
 
       <div
-        className="home-onboarding-shell mx-auto flex min-h-dvh w-full max-w-md flex-col pb-0 lg:max-w-6xl lg:grid lg:grid-cols-[0.9fr_1.1fr] lg:items-center lg:gap-10 lg:px-10 lg:py-10 lg:pb-10"
+        className={`home-onboarding-shell ${skipSplash ? 'home-onboarding-shell--ready' : ''} mx-auto flex min-h-dvh w-full max-w-md flex-col pb-0 lg:max-w-6xl lg:grid lg:grid-cols-[0.9fr_1.1fr] lg:items-center lg:gap-10 lg:px-10 lg:py-10 lg:pb-10`}
         onTouchStart={handleTouchStart}
         onTouchEnd={handleTouchEnd}
       >

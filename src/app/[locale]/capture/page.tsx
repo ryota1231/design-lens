@@ -124,7 +124,7 @@ export default function CapturePage() {
     );
   }
 
-  return <CameraCapture onCapture={handleCapture} onCancel={() => router.push('/')} />;
+  return <CameraCapture onCapture={handleCapture} onCancel={() => router.push('/?ready=1')} />;
 }
 
 async function readAnalyzeError(res: Response): Promise<string | undefined> {
